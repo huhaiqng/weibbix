@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>User</title>
+
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>  
+
+</head>
+<body>
+
+<!-- <table border="1">
+	<tr>
+		<th>Your Name</th>
+		<th>Your Age</th>
+	</tr>
+	{% for o in object_list %}
+	<tr>
+		<td>{{ o.your_name }}</td>
+		<td>{{ o.your_age }}</td>
+	</tr>
+	{% endfor %}
+</table> -->
+
+<div class="panel panel-default" id="showServers" style=" overflow: auto;">
+
+        <p class="navbar-form" style="width:100%;margin-bottom:10px;">
+        <div class="input-group" style="padding:10px;">
+                <input type="text" class="form-control searchValue" placeholder="搜索任意关键字" style="width:100%;" >
+                <span class="input-group-btn" >
+                        <button class="btn btn-success">
+                                <span class="glyphicon glyphicon-search">搜索</span>
+                        </button>
+                </span>
+        </div>
+       </p>
+    <div class="panel-heading" style="z-index: 1;background: white;">
+        <button class="btn btn-success btn-xs" id="createCrond" type="button" onclick="ShowDiv()"><span
+                class="glyphicon glyphicon-plus "></span></button>
+        <button class="btn btn-default btn-xs" id="refreshCrond" type="button"><span
+                class="glyphicon glyphicon-refresh "></span></button>
+    </div>
+
+	<table id="tb" class="table table-bordered table-hover table-striped  table-condensed "  style="background: white" >
+	    <tr>
+			<th>姓名</th>
+			<th>年龄</th>
+			<th>操作</th>
+		</tr>
+		{% for o in object_list %}
+		<tr>
+			<td>{{ o.your_name }}</td>
+			<td>{{ o.your_age }}</td>
+			<td>
+				<button class="btn btn-success btn-xs glyphicon glyphicon-edit" sid="91533918702"></button>
+				<button class="btn btn-danger btn-xs glyphicon glyphicon-trash" sid="91533918702" style="margin-left: 3px;"></button>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+<div  style="position: fixed;left: 0px;right: 0px;top: 0px;bottom: 0%;margin: auto;display:none ;z-index: 1004;" id="showCrontabDiv">
+
+    <div class="modal "
+         style="height: 95%;overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
+        <div class="modal-dialog">
+            <div class="modal-content  ">
+                <div class="modal-header" style="cursor: move;">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+
+                    <h4 class=" glyphicon glyphicon-success  glyphicon glyphicon-edit " >新增用户</h4>
+                </div>
+
+
+            <div class="modal-body">
+            
+            
+			            
+			<div class="input-group col-md-12" style="margin-top: 10px">
+                        <!--用户名-->
+                        <div class="input-group-addon "  style="width: 17%">Your Name</div>
+                        <input  id="name" class=" form-control "  style="width: 100%" >
+                    </div>
+
+			<div class="input-group col-md-12" style="margin-top: 10px">
+                        <!--用户名-->
+                        <div class="input-group-addon "  style="width: 17%">Your Age</div>
+                        <input  id="age" class=" form-control "  style="width: 100%" >
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="closeCrontab" onclick="CloseDiv()">取消</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" id="saveCrontab" onclick="add()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="javascript" src="/static/js/user.js"></script>
+
+</body>
+</html>
