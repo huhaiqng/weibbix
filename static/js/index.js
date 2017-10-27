@@ -15,15 +15,46 @@ var menu = [
         "应用管理": {
             "class": "glyphicon glyphicon-th",
             "id": "application"
+        }
+    
+    },
+    {
+        "应用发布": {
+            "class": "glyphicon glyphicon-log-in",
+            "id": "deployment",
+            "subMenu": {
+                "Tomcat 发布": {
+                	"class": "",
+                    "id": "tomcat"
+                },
+                "WAS 发布": {
+                    "class": "",
+                    "id": "wasdeployment"
+                },
+            }
         }    
     },
     {
-        "Tomcat 发布": {
-            "class": "glyphicon glyphicon-log-in",
-            "id": "tomcat"
-        }    
+        "日志下载": {
+            "class": "glyphicon glyphicon-import",
+            "id": "downloadlog"
+        }
+    
+    },
+    {
+        "主机管理": {
+            "class": "glyphicon glyphicon-blackboard",
+            "id": "hosts"
+        }
+    
     },
 ];
+
+$(function () {
+    screenFull();
+    createMenu();
+    welcome();
+})
 
 function createMenu() {
     var menuDiv = document.getElementById("menu");
@@ -55,14 +86,12 @@ function createMenu() {
             if (isSub) {
                 divLine.onclick = function () {
                     showAndCloseSection(this);
-
                 }
                 var spanRight = document.createElement("span");
                 spanRight.className = "fa fa-angle-right fa-2x ";
                 spanRight.style.cssText = "right:10px;position:absolute;"
                 divLine.appendChild(spanRight);
             }
-
 
             divFunc.appendChild(divLine);
 
@@ -93,20 +122,11 @@ function createMenu() {
                     subDivLine.appendChild(pic);
                     subDivLine.appendChild(text);
                     divSub.appendChild(subDivLine);
-
-
                 }
-
                 divFunc.appendChild(divSub);
-
             }
-
-
             menuDiv.appendChild(divFunc);
-
-
         }
-
     }
 }
 
@@ -127,7 +147,7 @@ window.onresize = function () {
 function sectionColor(div) {
     //start_load_pic();
     $("#menu").find(".sectionLine").css({"background": ""});
-    div.style.background = "#09c"
+    div.style.background = "#09c";
 }
 
 $(document).on("click", "#home", function () {
@@ -146,6 +166,11 @@ function project() {
 	 $("#showMainContent").load("/static/html/project.html");
 }
 
+$(document).on("click","#hosts",function(){
+	sectionColor(this);
+	$("#showMainContent").load("/static/html/hosts.html");
+});
+
 $(document).on("click", "#application", function () {
     sectionColor(this)
     application();
@@ -162,33 +187,24 @@ $(document).on("click", "#tomcat", function () {
     sectionColor(this)
     tomcat();
 });
+
+$(document).on("click", "#deployment", function () {
+    sectionColor(this)
+});
+
 function tomcat() {
 	 $("#showMainContent").load("/static/html/tomcat.html");
 }
 
-$(function () {
-    screenFull();
-    createMenu();
-    welcome()
-    //绑定菜单关闭
-    jQuery1_8("#showMenu").toggle(
-        function () {
-            $("#menu").animate({
-                "left": "-180px",
-            }, 300, function () {
-                $("#showMainContent").css({
-                    "position": "absolute",
-                    "width": window.innerWidth + "px",
-                })
-            });
-        }, function () {
-            $("#showMainContent").css({
-                "position": "relative",
-                "width": window.innerWidth - 180 + "px",
-            })
-            $("#menu").animate({
-                "left": "0px",
-            }, 300);
-        }
-    )
-})
+function showAndCloseSection(div) {
+    var nextDiv = $(div).next();
+    if (nextDiv[0].style.display === "none") {
+        $(div).parent().find(".fa").removeClass("fa-angle-right").addClass("fa-angle-down")
+        $(nextDiv).slideDown("fast");
+    }
+    else {
+        $(nextDiv).slideUp("fast");
+        $(this).removeClass("fa-angle-right")
+        $(div).parent().find(".fa").removeClass("fa-angle-down").addClass("fa-angle-right")
+    }
+}
