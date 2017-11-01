@@ -61,3 +61,15 @@ class BookForm(ModelForm):
         fields = ['name', 'authors']
 
 admin.site.register(BlogPost, BlogPostAdmin)
+
+class Host(models.Model):
+    sid=models.CharField(max_length=200)
+    ip=models.CharField(max_length=200)
+    hostname=models.CharField(max_length=200)
+    os=models.CharField(max_length=200)
+    software=models.CharField(max_length=200)
+    app=models.CharField(max_length=200)
+    owner=models.CharField(max_length=200)
+    fenpei=models.CharField(max_length=200)
+    sta=models.CharField(max_length=200)
+    

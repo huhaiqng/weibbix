@@ -45,5 +45,6 @@ urlpatterns = [
     url(r'^del_con_server/$',del_con_server,name='del_con_server'),
     url(r'^edit_con_srv/$',edit_con_srv,name='edit_con_srv'),
     url(r'^app_save/$',app_save,name="app_save"),
-    url(r'^get_dep_srv/$',get_dep_srv,name="get_dep_srv")
+    url(r'^get_dep_srv/$',get_dep_srv,name="get_dep_srv"),
+    url(r'^save_host/$',save_host,name="save_host")
 ]

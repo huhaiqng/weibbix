@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.template import loader,Context
 from django.http import HttpResponse
 from django.http import JsonResponse
-from application.models import BlogPost,User,Env,Tom,Config
+from application.models import BlogPost,User,Env,Tom,Config,Host
 import os
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -361,3 +361,29 @@ def get_dep_srv(request):
         srv={"con_srv":con_srv,"con_dir":con_dir}
         ret["content"].append(srv)
     return JsonResponse(ret)
+
+@csrf_exempt
+def save_host(request):
+    ret={"status":True}
+    sid=request.POST.get("sid")
+    ip=request.POST.get("ip")
+    hostname=request.POST.get("hostname")
+    os=request.POST.get("os")
+    software=request.POST.get("software")
+    fenpei=request.POST.get("fenpei")
+    sta=request.POST.get("status")
+    host=Host(sid=sid,ip=ip,hostname=hostname,os=os,software=software,fenpei=fenpei,sta=sta)
+    host.save()  
+    return JsonResponse(ret)
+
+@csrf_exempt
+def get_host(request):
+    ret={"content":[]}
+    hosts=Host.objects.all()
+    for h in hosts:
+        sid=h.sid
+        ip=h.ip
+        hostname=h.hostname
+        os=h.os
+
+    
