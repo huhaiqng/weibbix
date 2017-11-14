@@ -14,6 +14,8 @@ $(function(){
 		saveHost();
 		closeCreateHostDiv();
 	}
+	
+	getHostsTab();
 })
 
 function startShadow() {
@@ -136,11 +138,49 @@ function createHostLine(hostLine){
     delButton.style.marginLeft = "3px";
     delButton.className = "btn btn-danger btn-xs glyphicon glyphicon-trash";
     delButton.onclick = function () {
-    		
+    	delHost(this);
     }
     td.appendChild(delButton);
 	
 	tr.appendChild(td);
 	
 	tbody.appendChild(tr);
+}
+
+function getHostsTab(){
+	$.ajax({
+		url:"/get_host/",
+		type:"POST",
+		dataType:"Json",
+		data:'data',
+		success:function(data){
+			hosts=data.content;
+			for (var i=0;i<hosts.length;i++){
+				var host=hosts[i];
+				var sid=host.sid;
+				var ip=host.ip;
+				var hostname=host.hostname;
+				var os=host.os;
+				var software=host.software;
+				var fenpei=host.fenpei;
+				var status=host.sta;
+				h={sid:sid,ip:ip,hostname:hostname,os:os,software:software,fenpei:fenpei,status:status};
+				createHostLine(h);
+			}
+		},
+	})
+}
+
+function delHost(delBtn){
+	var sid=delBtn.getAttribute("sid");
+	$.ajax({
+		url:"/del_host/",
+		type:"POST",
+		dataTyep:"Json",
+		data:{"sid":sid},
+		success:function(){
+			var tr=$(delBtn).parent().parent();
+			$(tr).remove();
+		}
+	});
 }

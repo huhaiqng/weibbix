@@ -378,12 +378,27 @@ def save_host(request):
 
 @csrf_exempt
 def get_host(request):
-    ret={"content":[]}
+    host_list={"content":[]}
     hosts=Host.objects.all()
     for h in hosts:
         sid=h.sid
         ip=h.ip
         hostname=h.hostname
         os=h.os
+        software=h.software
+        app=h.app
+        owner=h.owner
+        fenpei=h.fenpei
+        sta=h.sta
+        host={"sid":sid,"ip":ip,"hostname":hostname,"os":os,"software":software,"app":app,"owner":owner,"fenpei":fenpei,"sta":sta}
+        host_list["content"].append(host)
+    return JsonResponse(host_list)
 
+@csrf_exempt
+def del_host(request):
+    ret={"content":True}
+    sid=request.POST.get("sid")
+    host=Host.objects.get(sid=sid)
+    host.delete()
+    return JsonResponse(ret)
     
