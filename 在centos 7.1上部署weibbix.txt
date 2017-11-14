@@ -1,0 +1,36 @@
+安装pip
+yum install -y openssl epel-release python-pip
+
+安装Django 1.8.18
+pip install Django==1.8.18
+
+安装MariaDB
+yum install -y mariadb mariadb-server mariadb-devel
+systemctl start mariadb
+mysql_secure_installation
+mysql -u root -p
+MariaDB [(none)]> create database weibbix;
+
+安装mysql-python
+yum install -y gcc libffi-devel python-devel openssl-devel
+pip install mysql-python
+
+安装paramiko
+pip install paramiko
+
+下载项目
+cd /usr/local
+git clone https://github.com/huhaiqng/weibbix.git
+
+初始化数据库
+python manage.py makemigrations
+python manage.py migrate
+
+修改settings.py
+ALLOWED_HOSTS = ['*']
+
+修改models.py
+# from test.test_imageop import MAX_LEN
+
+启动weibbix
+python manage.py runserver 192.168.1.21:80
