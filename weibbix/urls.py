@@ -20,9 +20,7 @@ from django.conf.urls import patterns
 urlpatterns = [
     url(r'^$',index,name='index'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^MyBlog/$', archive),
     url(r'^test/$', test, name='test'),
-#     url(r'^your-name/$', get_name),
     url(r'^user/$', get_user),
     url(r'^add/$',add , name='add'),
     url(r'^env_add/$',env_add , name='env_add'),

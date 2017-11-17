@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.template import loader,Context
 from django.http import HttpResponse
 from django.http import JsonResponse
-from application.models import BlogPost,User,Env,Tom,Config,Host
+from application.models import User,Env,Tom,Config,Host
 import os
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -18,31 +18,13 @@ from django.template.context_processors import request
 @csrf_exempt  
 def index(request):
     return render(request,"index.html")
-#    return HttpResponseRedirect('/static/html/index.html')
-
-def archive(request):
-    posts = BlogPost.objects.all()
-    t = loader.get_template('archive.html')
-    c = Context({'posts': posts})
-    return HttpResponse(t.render(c))
 
 def test(request):
-#     response = ""
-#     response1 = ""
-#     env_list=Env.objects.all()
-#     for var in env_list:
-#             response1 += var.env_name + " "
-#     response = response1
-#     return HttpResponse("<p>" + response + "</p>")
-#    return HttpResponse(env_list)
     return render(request, "test.html")
 
 @csrf_exempt
 def add(request):
-#    if request.method =='POST':
         ret={'status':1001,'error':''}
-#        name=request.POST.get('username')
-#        pwd=request.POST.get('password')
         name=request.POST.get('name')
         pwd=request.POST.get('domain')
         user=User(your_name=name,your_age=pwd)
@@ -53,17 +35,6 @@ def add(request):
         else:
             ret['error']='Username oR password error'
         return  HttpResponse(json.dumps(ret))
-#    return render(request,'test.html')
-
-# def get_name(request):
-#     if request.method == 'POST':
-#         form = NameForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect('/user/')
-#     else:
-#         form = NameForm()
-#     return render(request, 'name.html',{'form': form})
 
 def get_user(request):
     object_list = User.objects.all()
@@ -112,8 +83,6 @@ def env_list(request):
     return JsonResponse(env_list)
 
 def env_html(request):
-#    return render(request, "env.html")
-#    object_list = Env.objects.all()
     return render(request, 'env.html')
 
 @csrf_exempt
@@ -180,7 +149,6 @@ def tom_save(request):
     con=Config(con_sid=con_sid,srv_sid=srv_sid,con_env=con_env,con_dir=con_dir,con_srv=con_srv,con_usr=con_usr,con_pwd=con_pwd)
     c=Config.objects.filter(Q(con_env=con_env),Q(con_sid=con_sid),Q(con_srv=con_srv),Q(con_dir=con_dir))
     l=len(c)
-#    chk_sid = c.con_sid
     if l == 1 :
         con = Config.objects.get(Q(con_env=con_env),Q(con_sid=con_sid),Q(con_srv=con_srv),Q(con_dir=con_dir))
         con.con_sid=request.POST.get('con_sid')
@@ -211,11 +179,6 @@ def con_del(request):
     con = Config.objects.filter(Q(con_env=con_env),Q(con_sid=con_sid))
     for c in con:
         c.delete()
-#     
-#     l = len(con)
-#     if l > 0 :
-#         c = Config.objects.fil(Q(con_env=con_env),Q(con_sid=con_sid))
-#         c.delete()
     return JsonResponse(ret)
 
 @csrf_exempt
@@ -311,9 +274,7 @@ def dep_app_to_server(request):
     sftp.put(f,tmp)
     stdin,stdout,stderr=s.exec_command(cmd)
     ret={"status":stdout.read(),"error":stderr.read()}
- 
     s.close()
-
     return JsonResponse(ret)
 
 @csrf_exempt 
