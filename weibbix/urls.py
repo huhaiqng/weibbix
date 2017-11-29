@@ -19,6 +19,7 @@ from django.conf.urls import patterns
 
 urlpatterns = [
     url(r'^$',index,name='index'),
+    url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^test/$', test, name='test'),
     url(r'^user/$', get_user),

@@ -10,12 +10,12 @@
     <link href="/static/css/jquery-ui.css" rel="stylesheet">
     <link href="/static/css/bootstrap.css" rel="stylesheet">
     <link href="/static/css/font-awesome.min.css" rel="stylesheet">
-
+   
     <!--主页面的css-->
 </head>
 
 <body style="overflow-y:hidden">
-
+{% if user.is_authenticated %}
 <style>
 /*     #menu .sectionLine:hover {
         background: #22282e;
@@ -114,7 +114,11 @@
 <script src="/static/js/auto-line-number.js"></script> -->
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/index.js"></script>
-
+{% else %}
+	<p>你还没有登录，请
+        <button class="btn btn-default"><a href="{% url 'login' %}">登录</a></button>
+    </p>
+{% endif %}
 </body>
 </html>
 
