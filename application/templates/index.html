@@ -119,9 +119,10 @@
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/index.js"></script>
 {% else %}
-	<p>你还没有登录，请
+<!-- 	<p>你还没有登录，请
         <button class="btn btn-default"><a href="{% url 'login' %}">登录</a></button>
-    </p>
+    </p> -->
+    <script>window.location.href="{% url 'login' %}";</script> 
 {% endif %}
 </body>
 </html>
