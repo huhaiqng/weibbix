@@ -88,8 +88,12 @@
               class="glyphicon glyphicon-align-justify"></span> -->
 
         <span style="font-size: 150%;float: left;padding-left: 15px;font-family: 华文中体;font-weight: bold;color: white;line-height: 50px;">运维管理系统 Weibbix</span>
-        <span id=""
-              style="display:none;font-size: 120%;float: right;padding-right: 15px;padding-left:10px;border-left:1px solid #008fbf;font-family: 华文中体;font-weight: bold;color: white;line-height: 50px;cursor:pointer">用户名</span>
+        <span id="" style="display:none;font-size: 120%;float: right;padding-right: 15px;padding-left:10px;border-left:1px solid #008fbf;font-family: 华文中体;font-weight: bold;color: white;line-height: 50px;cursor:pointer">用户名</span>
+        <span style="font-size: 150%;float: right;padding-right: 15px;font-family: 华文中体;font-weight: bold;color: white;line-height: 50px;">
+        <button class="btn btn-default">
+		  <a href="{% url 'logout' %}?next={% url 'login' %}">注销</a>
+		</button>
+		</span>
     </div>
 
     <!--菜单和子页区域-->
