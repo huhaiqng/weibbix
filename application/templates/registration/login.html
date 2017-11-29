@@ -18,6 +18,7 @@
         <div class="flex-center" style="background-color:#00688B">
             <div class="unit-1-2 unit-1-on-mobile" >
                 <h3 style="text-align:center">Weibbix 运维管理系统</h3>
+                <h5>
                 <form class="form" action="{% url 'login' %}" method="post" style="padding-bottom: 20px">
                     {% csrf_token %}
                     {{ form.non_field_errors }}
@@ -31,9 +32,9 @@
                     {% endfor %}
                     <div style="padding-top: 20px">
                     	<button type="submit" class="btn btn-primary btn-block" >登录</button>
-                    </div>
-                    
+                    </div>                   
                 </form>
+                </h5>
 <!--                 <div class="flex-left top-gap text-small">
                     <div class="unit-1-3 flex-right"><span><a href="reset_password.html">忘记密码？</a></span></div>
                 </div> -->
