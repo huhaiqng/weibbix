@@ -14,13 +14,6 @@ var menu = [
     {
         "应用管理": {
             "class": "glyphicon glyphicon-th",
-            "id": "application"
-        }
-    
-    },
-    {
-        "应用发布": {
-            "class": "glyphicon glyphicon-log-in",
             "id": "deployment",
             "subMenu": {
                 "Tomcat 发布": {
@@ -48,6 +41,13 @@ var menu = [
         }
     
     },
+  {
+  "账号管理": {
+      "class": "glyphicon glyphicon-user",
+      "id": "osuser"
+  }
+
+},
 ];
 
 $(function () {
@@ -171,11 +171,11 @@ $(document).on("click","#hosts",function(){
 	$("#showMainContent").load("/static/html/hosts.html");
 });
 
-$(document).on("click", "#application", function () {
+$(document).on("click", "#osuser", function () {
     sectionColor(this)
-    application();
+    osuser();
 });
-function application() {
+function osuser() {
 	 $("#showMainContent").load("/static/html/application.html");
 }
 

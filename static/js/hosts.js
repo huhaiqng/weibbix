@@ -112,25 +112,25 @@ function createHostLine(hostLine){
     }
     td.appendChild(editButton);
     
-    var addUserButton = document.createElement("button");
-    var sid=hostLine.sid;
-    addUserButton.setAttribute("sid", sid);
-    addUserButton.style.marginLeft = "3px";
-    addUserButton.className = "btn btn-primary btn-xs glyphicon glyphicon-user";
-    addUserButton.onclick = function () {
-    		
-    }
-    td.appendChild(addUserButton);
-    
-    var detailButton = document.createElement("button");
-    var sid=hostLine.sid;
-    detailButton.setAttribute("sid", sid);
-    detailButton.style.marginLeft = "3px";
-    detailButton.className = "btn btn-info btn-xs glyphicon glyphicon-list-alt";
-    detailButton.onclick = function () {
-    		
-    }
-    td.appendChild(detailButton);
+//    var addUserButton = document.createElement("button");
+//    var sid=hostLine.sid;
+//    addUserButton.setAttribute("sid", sid);
+//    addUserButton.style.marginLeft = "3px";
+//    addUserButton.className = "btn btn-primary btn-xs glyphicon glyphicon-user";
+//    addUserButton.onclick = function () {
+//    		
+//    }
+//    td.appendChild(addUserButton);
+//    
+//    var detailButton = document.createElement("button");
+//    var sid=hostLine.sid;
+//    detailButton.setAttribute("sid", sid);
+//    detailButton.style.marginLeft = "3px";
+//    detailButton.className = "btn btn-info btn-xs glyphicon glyphicon-list-alt";
+//    detailButton.onclick = function () {
+//    		
+//    }
+//    td.appendChild(detailButton);
     
     var delButton = document.createElement("button");
     var sid=hostLine.sid;
