@@ -176,7 +176,7 @@ $(document).on("click", "#osuser", function () {
     osuser();
 });
 function osuser() {
-	 $("#showMainContent").load("/static/html/application.html");
+	 $("#showMainContent").load("/static/html/osuser.html");
 }
 
 function welcome() {

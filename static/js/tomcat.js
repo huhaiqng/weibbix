@@ -384,6 +384,7 @@ function selectServerCheck(team) {
     }
     else {
         $(span).removeClass("glyphicon-check").addClass("glyphicon-unchecked");
+        $(i).removeClass("glyphicon-check").addClass("glyphicon-unchecked");
         $("#depServerTbody").find(".glyphicon-check").each(function (){
         	n=n+1;
         });
@@ -406,6 +407,6 @@ function selectAllServers(){
         $("#depServerTbody").find(".glyphicon-check").each(function (){
         	$(this).removeClass("glyphicon-check").addClass("glyphicon-unchecked");
         });
-    }
-	
+    }	
 }
+

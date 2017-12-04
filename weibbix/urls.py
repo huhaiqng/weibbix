@@ -48,4 +48,5 @@ urlpatterns = [
     url(r'^save_host/$',save_host,name="save_host"),
     url(r'^get_host/$',get_host,name="get_host"),
     url(r'^del_host/$',del_host,name="del_host"),
+    url(r'^ip_list/$',ip_list,name="ip_list"),
 ]
