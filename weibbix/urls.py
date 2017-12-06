@@ -49,4 +49,7 @@ urlpatterns = [
     url(r'^get_host/$',get_host,name="get_host"),
     url(r'^del_host/$',del_host,name="del_host"),
     url(r'^ip_list/$',ip_list,name="ip_list"),
+    url(r'^save_osuser/$',save_osuser,name="save_osuser"),
+    url(r'^osuser_list/$',osuser_list,name="osuser_list"),
+    url(r'^del_osuser/$',del_osuser,name="del_osuser"),
 ]

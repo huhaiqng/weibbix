@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.template import loader,Context
 from django.http import HttpResponse
 from django.http import JsonResponse
-from application.models import User,Env,Tom,Config,Host
+from application.models import User,Env,Tom,Config,Host,OSUser
 import os
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -372,4 +372,50 @@ def ip_list(request):
         sid=i.sid
         data={"sid":sid,"ip":ip}
         ret["content"].append(data)
+    return JsonResponse(ret)
+
+@csrf_exempt
+def save_osuser(request):
+    ret={"status":True}
+    sid=request.POST.get("sid")
+    ip=request.POST.get("ip")
+    username=request.POST.get("username")
+    passwd=request.POST.get("passwd")
+    notice=request.POST.get("notice")
+    osu=OSUser(sid=sid,ip=ip,username=username,passwd=passwd,notice=notice)
+    osu.save()
+    return JsonResponse(ret)
+
+@csrf_exempt
+def osuser_list(request): 
+    ips=OSUser.objects.only('ip').order_by('ip')
+    osu_list={"content":[],"status":True}
+    n_ip=''
+    o_ip=''
+    for i in ips:
+        n_ip=i.ip
+        if n_ip == o_ip :
+            continue  
+        ip_list={"content":[],"status":True}
+        ip = i.ip
+        osus = OSUser.objects.filter(Q(ip=ip))
+        for u in osus:
+            sid = u.sid
+            ip = u.ip
+            username = u.username
+            passwd = u.passwd
+            notice = u.notice
+            ipa={'sid':sid,'ip':ip,'username':username,'passwd':passwd,'notice':notice}
+            ip_list["content"].append(ipa)
+        osu_list["content"].append(ip_list)
+        o_ip=n_ip
+    return JsonResponse(osu_list)
+
+@csrf_exempt
+def del_osuser(request):
+    ret={"status":True}
+    sid=request.POST.get("sid")
+    ip=request.POST.get("ip")
+    osuser=OSUser.objects.filter(Q(sid=sid),Q(ip=ip))
+    osuser.delete()
     return JsonResponse(ret)

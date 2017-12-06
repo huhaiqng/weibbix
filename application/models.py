@@ -43,4 +43,10 @@ class Host(models.Model):
     owner=models.CharField(max_length=200)
     fenpei=models.CharField(max_length=200)
     sta=models.CharField(max_length=200)
-     
+    
+class OSUser(models.Model):
+    sid=models.CharField(max_length=200)
+    ip=models.CharField(max_length=200)
+    username=models.CharField(max_length=200)
+    passwd=models.CharField(max_length=200)
+    notice=models.CharField(max_length=200)

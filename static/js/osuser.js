@@ -29,6 +29,8 @@ $(function(){
 	document.getElementById("saveOSUser").onclick = function(){
 		saveOSUser();
 	}
+	
+	getOSUserTab();
 })
 
 function startShadow() {
@@ -40,6 +42,7 @@ function stopShadow() {
 }
 
 function showCreateOSUserDiv(){
+	window.addStatus="notip";
 	document.getElementById("ip").value="";
 	document.getElementById("userName").value="";
 	document.getElementById("passwd").value="";
@@ -162,6 +165,7 @@ function selectAllIp(){
 }
 
 function chooseIp(){
+	window.addStatus="chooseip";
 	var ips=[];
 	var sids=[];
 	$("#ipTbody").find(".glyphicon-check").each(function(){
@@ -184,15 +188,40 @@ function chooseIp(){
 function saveOSUser(){
 	ips=window.ips;
 	sids=window.sids;
-	for (var i=0 ;i<ips.length;i++){
-		ip=ips[i];
-		sid=sids[i];
+	console.log(ips);
+	if (window.addStatus=="chooseip"){
+		for (var i=0 ;i<ips.length;i++){	
+			ip=ips[i];
+			sid=sids[i];
+			username=$("#userName").val();
+			passwd=$("#passwd").val();
+			notice=$("#notice").val();
+			data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
+			$.ajax({
+				url:"/save_osuser/",
+				type:"POST",
+				dataType:"json",
+				data:data,
+			});			
+		}
+	}	
+	else{
+		var sid=Math.random().toString(36).substr(2);
+		ip=$("#ip").val();
 		username=$("#userName").val();
 		passwd=$("#passwd").val();
 		notice=$("#notice").val();
 		data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
-		createOSUserLine(data);
+		$.ajax({
+			url:"/save_osuser/",
+			type:"POST",
+			dataType:"json",
+			data:data,
+		});
 	}
+	$("#osuserTbody").empty();
+
+	getOSUserTab();
 	stopShadow();
 	closeCreateOSUserDiv();
 }
@@ -203,18 +232,22 @@ function createOSUserLine(userLine){
 	
 	var td=document.createElement("td");
 	td.textContent=userLine.ip;
+	td.className="ip";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=userLine.username;
+	td.className="username";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=userLine.passwd;
+	td.className="passwd";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=userLine.notice;
+	td.className=notice;
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
@@ -235,11 +268,52 @@ function createOSUserLine(userLine){
     delButton.setAttribute("sid", sid);
     delButton.className = "btn btn-danger btn-xs glyphicon glyphicon-trash";
     delButton.onclick = function () {
-    	delHost(this);
+    	delOSUser(this);
     }
     td.appendChild(delButton);
 	
 	tr.appendChild(td);
 		
 	tbody.appendChild(tr);
+}
+
+function getOSUserTab(){
+	$.ajax({
+		url:"/osuser_list/",
+		type:"POST",
+		dataType:"json",
+		data:"data",
+		success:function(data){
+			ips=data.content;
+			for (var i=0;i<ips.length;i++){
+				osus=ips[i].content;
+				for (var j=0;j<osus.length;j++){
+					osu=osus[j];
+					ip=osu.ip;
+					sid=osu.sid;
+					username=osu.username;
+					passwd=osu.passwd;
+					notice=osu.notice;
+					data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
+					createOSUserLine(data);
+				}
+			}
+		},
+	})
+}
+
+function delOSUser(delBtn){
+	var tr=delBtn.parentNode.parentNode;
+	var sid=delBtn.getAttribute("sid");
+	var ip=$(tr).find(".ip")[0].textContent;
+	data={sid:sid,ip:ip};
+	$.ajax({
+		url:"/del_osuser/",
+		type:"POST",
+		dataType:"json",
+		data:data,
+		success:function(){
+			$(tr).remove();
+		}
+	});
 }
