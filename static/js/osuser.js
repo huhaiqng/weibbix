@@ -220,7 +220,6 @@ function saveOSUser(){
 		});
 	}
 	$("#osuserTbody").empty();
-
 	getOSUserTab();
 	stopShadow();
 	closeCreateOSUserDiv();
