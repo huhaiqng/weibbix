@@ -14,6 +14,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
 from django.template.context_processors import request
+from test.test_heapq import SideEffectLT
 
 @csrf_exempt  
 def index(request):
@@ -388,34 +389,56 @@ def save_osuser(request):
 
 @csrf_exempt
 def osuser_list(request): 
-    ips=OSUser.objects.only('ip').order_by('ip')
-    osu_list={"content":[],"status":True}
-    n_ip=''
-    o_ip=''
-    for i in ips:
-        n_ip=i.ip
-        if n_ip == o_ip :
-            continue  
-        ip_list={"content":[],"status":True}
-        ip = i.ip
-        osus = OSUser.objects.filter(Q(ip=ip))
-        for u in osus:
-            sid = u.sid
-            ip = u.ip
-            username = u.username
-            passwd = u.passwd
-            notice = u.notice
-            ipa={'sid':sid,'ip':ip,'username':username,'passwd':passwd,'notice':notice}
-            ip_list["content"].append(ipa)
-        osu_list["content"].append(ip_list)
-        o_ip=n_ip
-    return JsonResponse(osu_list)
+    ip_list={"content":[]}
+    osus = OSUser.objects.all().order_by('ip')
+    for u in osus:
+        sid = u.sid
+        ip = u.ip
+        username = u.username
+        passwd = u.passwd
+        notice = u.notice
+        ipa={'sid':sid,'ip':ip,'username':username,'passwd':passwd,'notice':notice}
+        ip_list["content"].append(ipa)
+    return JsonResponse(ip_list)
+    
 
 @csrf_exempt
 def del_osuser(request):
     ret={"status":True}
+    username=request.POST.get("username")
+    ip=request.POST.get("ip")
+    osuser=OSUser.objects.filter(Q(username=username),Q(ip=ip))
+    osuser.delete()
+    return JsonResponse(ret)
+
+@csrf_exempt
+def edit_osuser(request):
+    ret={"status":True}
     sid=request.POST.get("sid")
     ip=request.POST.get("ip")
-    osuser=OSUser.objects.filter(Q(sid=sid),Q(ip=ip))
-    osuser.delete()
+    username=request.POST.get("username")
+    passwd=request.POST.get("passwd")
+    notice=request.POST.get("notice")
+    osuser=OSUser.objects.get(Q(ip=ip),Q(username=username))
+    osuser.sid=sid
+    osuser.ip=ip
+    osuser.username=username
+    osuser.passwd=passwd
+    osuser.notice=notice
+    osuser.save()
+    return JsonResponse(ret)
+
+@csrf_exempt
+def search_osuser(request):
+    ret={"content":[]}
+    sip=request.POST.get("sip")
+    allsip=OSUser.objects.filter(ip__contains=sip).order_by('ip')
+    for s in allsip:
+        sid=s.sid
+        ip=s.ip
+        username=s.username
+        passwd=s.passwd
+        notice=s.notice
+        osu={"sid":sid,"ip":ip,"username":username,"passwd":passwd,"notice":notice}
+        ret["content"].append(osu)
     return JsonResponse(ret)

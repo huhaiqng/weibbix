@@ -52,4 +52,6 @@ urlpatterns = [
     url(r'^save_osuser/$',save_osuser,name="save_osuser"),
     url(r'^osuser_list/$',osuser_list,name="osuser_list"),
     url(r'^del_osuser/$',del_osuser,name="del_osuser"),
+    url(r'^edit_osuser/$',edit_osuser,name="edit_osuser"),
+    url(r'^search_osuser/$',search_osuser,name="search_osuser"),
 ]

@@ -30,8 +30,27 @@ $(function(){
 		saveOSUser();
 	}
 	
+	document.getElementById("saveEditOSUser").onclick=function(){
+		saveEditOSUser();
+	}
+	
+	document.getElementById("closeEditOSUser").onclick=function(){
+		closeEditOSUser();
+	}
+	
+	document.getElementById("searchBtn").onclick=function(){
+		searchOSUser();
+	}
 	getOSUserTab();
 })
+
+async function onesecond() {
+  await sleep(1000);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function startShadow() {
     document.getElementById("shadow").style.display = "block";
@@ -68,14 +87,22 @@ function showIpDiv(){
 }
 
 function closeShowIpDiv(){
-	$("#createOSUserDiv").animate({
-		"left":"0px",
-		"top":"0px",
-	});
+//	$("#createOSUserDiv").animate({
+//		"left":"0px",
+//		"top":"0px",
+//	});
 	$("#showIpDiv").animate({
 		"left":"-100%",
 		"top":"-120%",
 	});
+}
+
+function closeEditOSUser(){
+	$("#editOSUserDiv").animate({
+		"left":"-100%",
+		"top":"-120%",
+	});
+	stopShadow();
 }
 
 function createIpTab(){
@@ -188,7 +215,7 @@ function chooseIp(){
 function saveOSUser(){
 	ips=window.ips;
 	sids=window.sids;
-	console.log(ips);
+//	console.log(ips);
 	if (window.addStatus=="chooseip"){
 		for (var i=0 ;i<ips.length;i++){	
 			ip=ips[i];
@@ -220,6 +247,7 @@ function saveOSUser(){
 		});
 	}
 	$("#osuserTbody").empty();
+	onesecond();
 	getOSUserTab();
 	stopShadow();
 	closeCreateOSUserDiv();
@@ -246,7 +274,7 @@ function createOSUserLine(userLine){
 	
 	var td=document.createElement("td");
 	td.textContent=userLine.notice;
-	td.className=notice;
+	td.className="notice";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
@@ -257,7 +285,7 @@ function createOSUserLine(userLine){
     editButton.setAttribute("sid", sid);
     editButton.className = "btn btn-success btn-xs glyphicon glyphicon-edit";
     editButton.onclick = function () {
-    		
+    	editOSUser(this);
     }
     td.appendChild(editButton);
     
@@ -286,26 +314,52 @@ function getOSUserTab(){
 			ips=data.content;
 			for (var i=0;i<ips.length;i++){
 				osus=ips[i].content;
-				for (var j=0;j<osus.length;j++){
-					osu=osus[j];
-					ip=osu.ip;
-					sid=osu.sid;
-					username=osu.username;
-					passwd=osu.passwd;
-					notice=osu.notice;
-					data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
-					createOSUserLine(data);
-				}
+				osu=ips[i];
+				ip=osu.ip;
+				sid=osu.sid;
+				username=osu.username;
+				passwd=osu.passwd;
+				notice=osu.notice;
+				data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
+				createOSUserLine(data);
 			}
+			
+			
+/*			$("#osuserTab").bootstrapTable('destroy').bootstrapTable({
+	            method: 'post',
+	            contentType:"application/x-www-form-urlencoded; charset=UTF-8", // 默认是：'application/json'， 不改的话，后台获取不到数据！ ###### 非常重要！！######
+	            cache: false,   //是否启用 数据缓存
+	            pagination: true,  //是都分页
+	            sidePageination: 'client',   //谁来分页，客户端：'client'，服务端：'server'
+	            pageNumber: 1,   //默认显示 首页
+	            pageSize: 15,     //每页需要显示的数据量
+	            uniqueId: 'gameorderid',
+	            silent: true,    // 刷新服务器数据
+	            showExport: true,
+	            exportDataType: 'all',
+	            onSort: function (a, b) { //点击排序时触发
+	                $(".fixed-table-header").removeClass('hidden');
+	                return a - b;
+	            },
+	            onLoadSuccess: function (data) { //加载成功时执行
+	                alert(1);
+	                console.log(data);
+	            },
+	            onLoadError: function (res) { //加载失败时执行
+	                console.log(res);
+	            }
+	        });*/
+			
+			
 		},
 	})
 }
 
 function delOSUser(delBtn){
 	var tr=delBtn.parentNode.parentNode;
-	var sid=delBtn.getAttribute("sid");
 	var ip=$(tr).find(".ip")[0].textContent;
-	data={sid:sid,ip:ip};
+	var username=$(tr).find(".username")[0].textContent;
+	data={username:username,ip:ip};
 	$.ajax({
 		url:"/del_osuser/",
 		type:"POST",
@@ -315,4 +369,73 @@ function delOSUser(delBtn){
 			$(tr).remove();
 		}
 	});
+}
+
+function editOSUser(editBtn){
+	var tr=editBtn.parentNode.parentNode;
+	var sid=editBtn.getAttribute("sid");
+	var eip=$(tr).find(".ip")[0].textContent;
+	var eusername=$(tr).find(".username")[0].textContent;
+	var epasswd=$(tr).find(".passwd")[0].textContent;
+	var enotice=$(tr).find(".notice")[0].textContent;
+	window.editTr=tr;
+	window.editSid=sid;
+	document.getElementById("eip").value=eip;
+	document.getElementById("eusername").value=eusername;
+	document.getElementById("epasswd").value=epasswd;
+	document.getElementById("enotice").value=enotice;
+	startShadow();
+	$("#editOSUserDiv").animate({
+		"left":"0px",
+		"top":"0px",
+	});
+}
+
+function saveEditOSUser(){
+	var tr=window.editTr;
+	var sid=window.editSid;
+	var ip=$("#eip").val();
+	var username=$("#eusername").val();
+	var passwd=$("#epasswd").val();
+	var notice=$("#enotice").val();
+	console.log(sid);
+	data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
+	$.ajax({
+		url:"/edit_osuser/",
+		type:"POST",
+		dataType:"json",
+		data:data,
+		success:function(){
+			$(tr).find(".ip")[0].textContent=ip;
+			$(tr).find(".username")[0].textContent=username;
+			$(tr).find(".passwd")[0].textContent=passwd;
+			$(tr).find(".notice")[0].textContent=notice;
+			closeEditOSUser();
+		}
+	});
+}
+
+function searchOSUser(){
+	var sip=document.getElementById("sip").value;
+	data={sip:sip};
+	$("#osuserTbody").empty();
+	$.ajax({
+		url:"/search_osuser/",
+		type:"POST",
+		dataType:"json",
+		data:data,
+		success:function(data){
+			osus=data.content;
+			for (var i=0;i<osus.length;i++){
+				osu=osus[i];
+				ip=osu.ip;
+				sid=osu.sid;
+				username=osu.username;
+				passwd=osu.passwd;
+				notice=osu.notice;
+				data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
+				createOSUserLine(data);
+			}
+		},
+	})
 }
