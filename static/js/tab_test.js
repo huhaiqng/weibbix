@@ -323,8 +323,8 @@ function getOSUserTab(){
 				data={sid:sid,ip:ip,username:username,passwd:passwd,notice:notice};
 				createOSUserLine(data);
 			}
-			
-			var pageSize = 15;    //每页显示的记录条数
+
+            var pageSize = 2;    //每页显示的记录条数
             var curPage=0;        //当前页
             var lastPage;        //最后页
             var direct=0;        //方向
@@ -335,12 +335,13 @@ function getOSUserTab(){
             
             len =$("#osuserTbody tr").length;    // 求这个表的总行数，剔除第一行介绍
             page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
+            // alert("page==="+page);
             curPage=1;    // 设置当前为第一页
             displayPage(1);//显示第一页
             
             document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";    // 显示当前多少页
-            document.getElementById("sjzl").innerHTML="数据总量 " + len + " 条&nbsp";        // 显示数据量
-            document.getElementById("pageSize").innerText = pageSize;
+            document.getElementById("sjzl").innerHTML="数据总量 " + len + "";        // 显示数据量
+            document.getElementById("pageSize").value = pageSize;
                         
             $("#btn1").click(function firstPage(){    // 首页
                 curPage=1;
@@ -374,7 +375,7 @@ function getOSUserTab(){
 	            displayPage();
             });
             
-/*            $("#pageSizeSet").click(function setPageSize(){    // 设置每页显示多少条记录
+            $("#pageSizeSet").click(function setPageSize(){    // 设置每页显示多少条记录
                 pageSize = document.getElementById("pageSize").value;    //每页显示的记录条数
                 if (!/^[1-9]\d*$/.test(pageSize)) {
                     alert("请输入正整数");
@@ -385,7 +386,8 @@ function getOSUserTab(){
                 curPage=1;        //当前页
                 direct=0;        //方向
                 firstPage();
-            });*/
+            });
+ 
  
             function displayPage(){
                 if(curPage <=1 && direct==-1){
@@ -407,7 +409,7 @@ function getOSUserTab(){
 	                curPage = 1;
 	            }
                  
-//	            document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";        // 显示当前多少页
+	            document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";        // 显示当前多少页
             
 	            begin=(curPage-1)*pageSize + 1;// 起始记录号
 	            end = begin + 1*pageSize - 1;    // 末尾记录号
@@ -421,8 +423,7 @@ function getOSUserTab(){
          }
             
 		},
-	})
-			
+	})				
 }
 
 function delOSUser(delBtn){
