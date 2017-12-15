@@ -30,8 +30,8 @@
             <th>系统版本</th>
             <th>软件部署</th>
             <th>所属应用</th>
-            <th>申请人</th>
-            <th>是否已分配</th>
+            <th>所属环境</th>
+            <th>配置</th>
             <th>是否使用中</th>           
             <th style="width: 6%">操作</th>
         </tr>
@@ -61,13 +61,13 @@
     <a  href="#" id="btn5">跳转</a> -->
 </div>
 
-<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="createHostDiv">
+<div style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="createHostDiv">
     <div class="modal" style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
         <div class="modal-dialog">
             <div class="modal-content  ">
                 <div class="modal-header" style="cursor: move;">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">添加应用</h4>
+                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">添加服务器</h4>
                 </div>
                 <div class="modal-body" id="hostBody" >
                     <div class="input-group col-md-12" style="margin-top: 10px">
@@ -80,20 +80,111 @@
                     </div>
                     <div class="input-group col-md-12" style="margin-top: 10px">
                         <div class="input-group-addon "  style="width: 17%">系统版本</div>
-                        <input id="os" class=" form-control "  style="width: 100%" >
+<!--                         <input id="os" class=" form-control "  style="width: 100%" > -->
+                        <div class="btn-group" style="width: 100%;">
+                            <select id="os" class="form-control">
+	                            <option>CentOS 6</option>
+	                            <option>CentOS 7</option>
+	                            <option>Redhat 6</option>
+	                            <option>Redhat 7</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="input-group col-md-12" style="margin-top: 10px">
                         <div class="input-group-addon "  style="width: 17%">软件部署</div>
-                        <input id="software" class=" form-control "  style="width: 100%" >
-                    </div>
+						<div class="btn-group" style="width: 100%;">
+						    <select id="software" class="form-control">
+						     <option>Tomcat 7</option>
+						     <option>Tomcat 8</option>
+						     <option>Nginx 1.8</option>
+						     <option>MySQL 5.6</option>
+						    </select>
+						</div>
+                   </div>
+                   <div class="input-group col-md-12" style="margin-top: 10px">
+                         <div class="input-group-addon "  style="width: 17%">配置</div>
+	                     <div class="btn-group" style="width: 100%;">
+	                         <select id="fenpei" class="form-control">
+	                         	<option>C:2 M:4G D:20G</option>
+	                         	<option>C:4 M:8G D:40G</option>
+	                         </select>
+	                     </div>
+                   </div>
                 </div>
                 <div class="modal-footer">
                     <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeCreateHost">取消</button>
                     <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="saveHost">保存</button>
-                </div>
-            </div>
+                </div> 
         </div>
     </div>
+  </div>
+</div>
+
+<div style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="editHostDiv">
+    <div class="modal" style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
+        <div class="modal-dialog">
+            <div class="modal-content  ">
+                <div class="modal-header" style="cursor: move;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">修改服务器</h4>
+                </div>
+                <div class="modal-body" id="hostBody" >
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">IP地址</div>
+                        <input id="eip" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">主机名</div>
+                        <input id="ehostName" class=" form-control"  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">系统版本</div>
+                        <div class="btn-group" style="width: 100%;">
+                            <select id="eos" class="form-control">
+	                            <option>CentOS 6</option>
+	                            <option>CentOS 7</option>
+	                            <option>Redhat 6</option>
+	                            <option>Redhat 7</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                         <div class="input-group-addon "  style="width: 17%">软件部署</div>
+	                     <div class="btn-group" style="width: 100%;">
+	                         <select id="esoftware" class="form-control">
+	                          <option>Tomcat 7</option>
+	                          <option>Tomcat 8</option>
+	                          <option>Nginx 1.8</option>
+	                          <option>MySQL 5.6</option>
+	                         </select>
+	                     </div>
+                   </div>
+                   <div class="input-group col-md-12" style="margin-top: 10px">
+                         <div class="input-group-addon "  style="width: 17%">配置</div>
+	                     <div class="btn-group" style="width: 100%;">
+	                         <select id="efenpei" class="form-control">
+	                         	<option>C:2 M:4G D:20G</option>
+	                         	<option>C:4 M:8G D:40G</option>
+	                         </select>
+	                     </div>
+                   </div>
+                   <div class="input-group col-md-12" style="margin-top: 10px">
+                         <div class="input-group-addon "  style="width: 17%">使用情况</div>
+	                     <div class="btn-group" style="width: 100%;">
+	                         <select id="estatus" class="form-control">
+	                         	<option>使用中</option>
+	                         	<option>已下线</option>
+	                         </select>
+	                     </div>
+                   </div>
+                </div>
+			<div class="modal-footer">
+			    <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeEditHost">取消</button>
+			    <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="saveEditHost">保存</button>
+			</div>
+        </div>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript" src="/static/js/jquery-1.8.3.min.js"></script>

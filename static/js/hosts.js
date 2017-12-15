@@ -15,6 +15,18 @@ $(function(){
 		closeCreateHostDiv();
 	}
 	
+	document.getElementById("closeEditHost").onclick=function(){
+		stopShadow();
+		$("#editHostDiv").animate({
+			"left":"-100%",
+			"top":"-120%",
+		});
+	}
+	
+	document.getElementById("saveEditHost").onclick=function(){
+		saveEditHost();
+	}
+	
 	getHostsTab();
 })
 
@@ -29,9 +41,16 @@ function stopShadow() {
 function showCreateHostDiv(){
 	document.getElementById("ip").value="";
 	document.getElementById("hostName").value="";
-	document.getElementById("os").value="";
-	document.getElementById("software").value="";
+//	document.getElementById("os").value="";
+//	document.getElementById("software").value="";
 	$("#createHostDiv").animate({
+		"left":"0px",
+		"top":"0px",
+	});
+}
+
+function showEditHostDiv(){
+	$("#editHostDiv").animate({
 		"left":"0px",
 		"top":"0px",
 	});
@@ -48,9 +67,9 @@ function saveHost(){
 	var sid=Math.random().toString(36).substr(2);
 	var ip=$("#ip").val();
 	var hostname=$("#hostName").val();
-	var os=$("#os").val();
-	var software=$("#software").val();
-	var fenpei="未分配";
+	var os=$("#os").find("option:selected").val();
+	var software=$("#software").find("option:selected").val();
+	var fenpei=$("#fenpei").find("option:selected").val();
 	var status="使用中";
 	data={sid:sid,ip:ip,hostname:hostname,os:os,software:software,fenpei:fenpei,status:status};
 	$.ajax({
@@ -72,34 +91,42 @@ function createHostLine(hostLine){
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.ip;
+	td.className="ip";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.hostname;
+	td.className="hostname";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.os;
+	td.className="os";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.software;
+	td.className="software";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.app;
+	td.className="app";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.owner;
+	td.className="owner";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.fenpei;
+	td.className="fenpei";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
 	td.textContent=hostLine.status;
+	td.className="status";
 	tr.appendChild(td);
 	
 	var td=document.createElement("td");
@@ -110,7 +137,7 @@ function createHostLine(hostLine){
     editButton.style.marginLeft = "3px";
     editButton.className = "btn btn-success btn-xs glyphicon glyphicon-edit";
     editButton.onclick = function () {
-    		
+    	editHost(this);
     }
     td.appendChild(editButton);
     
@@ -199,20 +226,7 @@ function getHostsTab(){
 	            direct = 0;
 	            displayPage();
             });
-            
-/*            $("#pageSizeSet").click(function setPageSize(){    // 设置每页显示多少条记录
-                pageSize = document.getElementById("pageSize").value;    //每页显示的记录条数
-                if (!/^[1-9]\d*$/.test(pageSize)) {
-                    alert("请输入正整数");
-                    return ;
-                }
-                len =$("#mytable tr").length - 1;
-                page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
-                curPage=1;        //当前页
-                direct=0;        //方向
-                firstPage();
-            });*/
- 
+             
             function displayPage(){
                 if(curPage <=1 && direct==-1){
                     direct=0;
@@ -232,9 +246,7 @@ function getHostsTab(){
 	            } else {
 	                curPage = 1;
 	            }
-                 
-//	            document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";        // 显示当前多少页
-            
+                         
 	            begin=(curPage-1)*pageSize + 1;// 起始记录号
 	            end = begin + 1*pageSize - 1;    // 末尾记录号
                   
@@ -258,8 +270,55 @@ function delHost(delBtn){
 		dataTyep:"Json",
 		data:{"sid":sid},
 		success:function(){
-			var tr=$(delBtn).parent().parent();
-			$(tr).remove();
+			$("#hostsTbody").empty();
+			getHostsTab();
 		}
 	});
+}
+
+function editHost(editBtn){
+	startShadow();
+	showEditHostDiv();
+	var tr=editBtn.parentNode.parentNode;
+	var sid=editBtn.getAttribute("sid");
+	window.editHostSid=sid;
+	var eip=$(tr).find(".ip")[0].textContent;
+	var ehostname=$(tr).find(".hostname")[0].textContent;
+	var eos=$(tr).find(".os")[0].textContent;
+	var esoftware=$(tr).find(".software")[0].textContent;
+	var efenpei=$(tr).find(".fenpei")[0].textContent;
+	var estatus=$(tr).find(".status")[0].textContent;
+	
+	document.getElementById("eip").value=eip;
+	document.getElementById("ehostName").value=ehostname;
+	document.getElementById("eos").value=eos;
+	document.getElementById("esoftware").value=esoftware;
+	document.getElementById("efenpei").value=efenpei;
+	document.getElementById("estatus").value=estatus;
+}
+
+function saveEditHost(){
+	esid=window.editHostSid;
+	eip=document.getElementById("eip").value;
+	ehostname=document.getElementById("ehostName").value;
+	eos=document.getElementById("eos").value;
+	esoftware=document.getElementById("esoftware").value;
+	efenpei=document.getElementById("efenpei").value;
+	estatus=document.getElementById("estatus").value;
+	data={sid:esid,ip:eip,hostname:ehostname,os:eos,software:esoftware,fenpei:efenpei,status:estatus};
+	$.ajax({
+		url:"/edit_host/",
+		type:"POST",
+		dataType:"json",
+		data:data,
+		success:function(){
+			$("#hostsTbody").empty();
+			getHostsTab();
+			$("#editHostDiv").animate({
+				"left":"-100%",
+				"top":"-120%",
+			});
+			stopShadow();
+		}
+	})
 }

@@ -16,11 +16,11 @@ var menu = [
             "class": "glyphicon glyphicon-th",
             "id": "deployment",
             "subMenu": {
-                "Tomcat 发布": {
+                "Tomcat": {
                 	"class": "",
                     "id": "tomcat"
                 },
-                "WAS 发布": {
+                "WAS": {
                     "class": "",
                     "id": "wasdeployment"
                 },

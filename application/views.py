@@ -442,3 +442,17 @@ def search_osuser(request):
         osu={"sid":sid,"ip":ip,"username":username,"passwd":passwd,"notice":notice}
         ret["content"].append(osu)
     return JsonResponse(ret)
+
+@csrf_exempt
+def edit_host(request):
+    ret={"status":True}
+    esid=request.POST.get("sid")
+    ehost=Host.objects.get(sid=esid)
+    ehost.ip=request.POST.get("ip")
+    ehost.hostname=request.POST.get("hostname")
+    ehost.os=request.POST.get("os")
+    ehost.software=request.POST.get("software")
+    ehost.fenpei=request.POST.get("fenpei")
+    ehost.sta=request.POST.get("status")
+    ehost.save()
+    return JsonResponse(ret)
