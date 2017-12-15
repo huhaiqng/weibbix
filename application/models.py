@@ -17,7 +17,8 @@ class User(AbstractUser):
 class Env(models.Model):
     env_sid = models.CharField(max_length = 200)
     env_name = models.CharField(max_length = 150)
-    env_domain = models.CharField(max_length = 150) 
+    env_domain = models.CharField(max_length = 150)
+    env_disc=models.CharField(max_length=200)
      
 class Tom(models.Model):
     tom_sid = models.CharField(max_length = 200)

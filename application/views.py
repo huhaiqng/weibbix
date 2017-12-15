@@ -46,8 +46,9 @@ def env_add(request):
     ret={"content":"","status":False}
     sid=request.POST.get('sid')
     name=request.POST.get('name')
-    domain=request.POST.get('domain')   
-    env=Env(env_name=name,env_domain=domain,env_sid=sid)
+    domain=request.POST.get('domain') 
+    disc=request.POST.get('disc')  
+    env=Env(env_name=name,env_domain=domain,env_sid=sid,env_disc=disc)
     env.save()
     ret={'status':1001,'error':''}
     return  HttpResponse(json.dumps(ret))
@@ -59,6 +60,7 @@ def env_edit(request):
     env=Env.objects.get(env_sid=sid)
     env.env_name=request.POST.get('name')
     env.env_domain=request.POST.get('domain') 
+    env.env_disc=request.POST.get('disc')
     env.save()
     ret={'status':1001,'error':''}
     return  HttpResponse(json.dumps(ret))
@@ -79,7 +81,8 @@ def env_list(request):
         name=e.env_name
         domain=e.env_domain
         sid=e.env_sid
-        data={'env_name':name,'env_domain':domain,'env_sid':sid}
+        disc=e.env_disc
+        data={'env_name':name,'env_domain':domain,'env_sid':sid,'env_disc':disc}
         env_list["content"].append(data)
     return JsonResponse(env_list)
 

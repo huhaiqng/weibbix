@@ -1,6 +1,32 @@
 /**
  * 
  */
+$(function () {	
+	getEnvTable()
+//	loadServersConfigTable()
+    document.getElementById("createServer").onclick = function () {
+		document.getElementById("name").value="";
+		document.getElementById("domain").value="";
+		document.getElementById("disc").value="";
+        window.currentEditServerModel = "create";
+        startShadow();
+        showEditServerConfigTable();
+    }
+    
+    document.getElementById("saveEnvConfig").onclick = function () {
+        if (getServerConfigFromTable()) {
+            closeAddEnv();
+        }
+    }
+    
+    document.getElementById("closeEditEnv").onclick = function () {
+    	closeEditEnv();
+    }
+    
+    document.getElementById("closeAddEnv").onclick = function () {
+    	closeAddEnv();
+    }
+})
 
 function startShadow() {
     document.getElementById("shadow").style.display = "block";
@@ -34,17 +60,18 @@ function closeEditEnv() {
 }
 
 function getServerConfigFromTable() {
-	var name =$('#name').val()
-	var domain =$('#domain').val()
+	var name =$('#name').val();
+	var domain =$('#domain').val();
+	var disc=$("#disc").val();
 	var sid= Math.random().toString(36).substr(2);
-	serverLine={env_name:name,env_domain:domain,env_sid:sid}
+	serverLine={env_name:name,env_domain:domain,env_sid:sid,env_disc:disc};
     $.ajax({
         url:'/env_add/',
         type:'POST',
-        data:{name:name,domain:domain,sid:sid},
+        data:{name:name,domain:domain,sid:sid,disc:disc},
     })
-    createServerLine(serverLine)
-    return true
+    createServerLine(serverLine);
+    return true;
 }
 
 function getEnvTable() {
@@ -59,7 +86,8 @@ function getEnvTable() {
                 name=env.env_name
             	domain=env.env_domain
             	sid=env.env_sid
-            	serverLine={'env_name':name,'env_domain':domain,'env_sid':sid}
+            	disc=env.env_disc
+            	serverLine={'env_name':name,'env_domain':domain,'env_sid':sid,'env_disc':disc}
                 createServerLine(serverLine);//调用创建服务器的每一行
             }
         },
@@ -76,28 +104,24 @@ function loadServersConfigTable() {
 }
 
 function createServerLine(serverLine) {
-    //serverLine是一个服务器的全部配置
     var tbody = document.getElementById("envTbody");
     var tr = document.createElement("tr");//创建一行
     
-
-
-
-    //第二个字段IP
     var td = document.createElement("td");
     td.textContent = serverLine.env_name;
     td.className = "env_name";
     tr.appendChild(td);
 
-    //第三个字段是别名
     var td = document.createElement("td");
     td.textContent = serverLine.env_domain;
     td.className = "env_domain";
     tr.appendChild(td);
+    
+    var td = document.createElement("td");
+    td.textContent = serverLine.env_disc;
+    td.className = "env_disc";
+    tr.appendChild(td);
 
-    //第十六个字段 操作
-
-    //编辑按钮
     var td = document.createElement("td");
     var editButton = document.createElement("button");
     var sid=serverLine.env_sid;
@@ -109,22 +133,19 @@ function createServerLine(serverLine) {
         window.currentEditServerModel = "edit";//记录当前的编辑模式，有edit/create
     }
     td.appendChild(editButton);
-    //删除按钮
+
     var deleteButton = document.createElement("button");
     var sid=serverLine.env_sid;
     deleteButton.setAttribute("sid", sid);
     deleteButton.style.marginLeft = "3px";
     deleteButton.className = "btn btn-danger btn-xs glyphicon glyphicon-trash";
     deleteButton.onclick = function () {
-        //记得从windowallServerList中删除记录
         var deleteButtonElements = this;//可以批量删除
         deleteServerConfig(deleteButtonElements);
     }
     td.appendChild(deleteButton);
     tr.appendChild(td);
 
-
-    //最后加入表格
     tbody.appendChild(tr);
 }
 
@@ -160,17 +181,20 @@ function loadServerLineToTable(editButton) {
     var tr = $(td).parent();
     var name = $(tr).find(".env_name")[0].textContent;
     var domain = $(tr).find(".env_domain")[0].textContent;
+    var disc=$(tr).find(".env_disc")[0].textContent;
     document.getElementById("edit_name").value = name;
     document.getElementById("edit_domain").value = domain;
+    document.getElementById("edit_disc").value=disc;
     
     document.getElementById("saveEditEnv").onclick = function () {
     	var name =$('#edit_name').val()
     	var domain =$('#edit_domain').val()
+    	var disc=$("#edit_disc").val()
     	serverLine={env_name:name,env_domain:domain,env_sid:sid}
         $.ajax({
             url:'/env_edit/',
             type:'POST',
-            data:{name:name,domain:domain,sid:sid},
+            data:{name:name,domain:domain,sid:sid,disc:disc},
             success: function(){
             	closeEditEnv();
             	$("#envTbody").html("");
@@ -188,29 +212,3 @@ function showEditServerConfigTable() {
         "top": "0px",
     });
 }
-
-$(function () {	
-	getEnvTable()
-//	loadServersConfigTable()
-    document.getElementById("createServer").onclick = function () {
-		document.getElementById("name").value="";
-		document.getElementById("domain").value="";
-        window.currentEditServerModel = "create";
-        startShadow();
-        showEditServerConfigTable();
-    }
-    
-    document.getElementById("saveEnvConfig").onclick = function () {
-        if (getServerConfigFromTable()) {
-            closeAddEnv();
-        }
-    }
-    
-    document.getElementById("closeEditEnv").onclick = function () {
-    	closeEditEnv();
-    }
-    
-    document.getElementById("closeAddEnv").onclick = function () {
-    	closeAddEnv();
-    }
-})
