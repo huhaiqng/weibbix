@@ -1,0 +1,91 @@
+apache日志格式
+LogFormat "%h %l %T %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+
+server.conf配置文件
+input {  
+        redis {  
+                host => "10.10.45.200"  
+                data_type => "list"  
+                key => "elk_frontend_access:redis"  
+                port =>"5379"  
+        }  
+}  
+output { 
+    if "_grokparsefailure" in [tags] {
+    }else{
+        if [type] == "www1_access"{
+                elasticsearch {
+                  	 hosts => "10.10.45.200:8200"
+                 	 index => "logstash-www1-frontend-%{+YYYY.MM.dd}"
+        	}
+        }
+       if [type] == "flight1_access"{
+                 elasticsearch {
+                        hosts => "10.10.45.200:8200"
+	                index => "logstash-flight1-frontend-%{+YYYY.MM.dd}"
+        	 }
+        }
+        if [type] == "apache_access"{
+                 elasticsearch { 
+                        hosts => "10.10.45.200:8200"
+                        index => "apache_elastic_example"
+						template => "./apache_template.json"
+						template_name => "apache_elastic_example"
+						template_overwrite => true
+                 }
+        }
+    }   
+}
+
+apache_logstash.conf配置文件
+input {  
+        file {  
+                type => "apache_access"  
+                path => ["/usr/local/elk/logs/ro.mangocity.com-access_log-2017-05-09-16"]  
+        }
+}
+filter {
+	grok {
+		match => {
+		  "message" => '%{IPORHOST:clientip} %{USER:ident} %{NUMBER:responsetime} %{USER:auth} \[%{HTTPDATE:timestamp}\] "%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response:int} (?:-|%{NUMBER:bytes:int}) %{QS:referrer} %{QS:agent}'
+		}
+	}
+	date {
+		match => [ "timestamp", "dd/MMM/YYYY:HH:mm:ss Z" ]
+		locale => en
+	}
+	geoip {
+		source => "clientip"
+	}
+
+	useragent {
+		source => "agent"
+		target => "useragent"
+	}
+}
+output {
+        redis {  
+                host => "10.10.45.200"  
+                data_type => "list"  
+                key => "elk_frontend_access:redis"  
+                port=>"5379"  
+        }  
+}
+
+相关文件下载
+wget https://raw.githubusercontent.com/elastic/examples/master/ElasticStack_apache/apache_logstash.conf
+wget https://raw.githubusercontent.com/elastic/examples/master/ElasticStack_apache/apache_template.json
+wget https://raw.githubusercontent.com/elastic/examples/master/ElasticStack_apache/apache_kibana.json
+wget https://raw.githubusercontent.com/elastic/examples/master/ElasticStack_apache/apache_logs
+
+kibana设置
+* Access Kibana by going to `http://localhost:5601` in a web browser
+* Connect Kibana to the `apache_elastic_example` index in Elasticsearch (autocreated in step 1)
+    * Click the **Management** tab >> **Index Patterns** tab >> **Create New**. Specify `apache_elastic_example` as the index pattern name and click **Create** to define the index pattern. (Leave the **Use event times to create index names** box unchecked and use @timestamp as the Time Field)
+* Load sample dashboard into Kibana
+    * Click the **Management** tab >> **Saved Objects** tab >> **Import**, and select `apache_kibana.json`
+* Open dashboard
+    * Click on **Dashboard** tab and open `Sample Dashboard for Apache Logs` dashboard
+	
+相关资料
+https://github.com/elastic/examples/

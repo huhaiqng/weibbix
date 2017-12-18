@@ -1,0 +1,35 @@
+软件安装包
+JDK: jdk-8u131-linux-x64.tar.gz
+Tomcat: apache-tomcat-8.5.14.tar.gz
+
+Jenkins版本: Jenkins ver. 2.60.2
+
+1、配置jdk
+tar xvf jdk-8u131-linux-x64.tar.gz -C /usr/local
+cd /usr/local
+mv jdk-8u131-linux-x64.tar.gz jdk
+su - tomcat
+vim .bash_profile
+	JAVA_HOME=/usr/local/jdk
+	PATH=$JAVA_HOME/bin:$PATH:$HOME/bin
+	export PATH JAVA_HOME
+source .bash_profile
+
+2、安装Tomcat8
+tar xvf apache-tomcat-8.5.14.tar.gz /usr/local
+cd /usr/local
+mv apache-tomcat-8.5.14 tomcat
+#更改cacheMaxSize
+vim /usr/local/tomcat/conf/context.xml 
+	<Context>
+		<Resources cachingAllowed="true" cacheMaxSize="100000" />
+	</Context>
+#更改Tomcat内存
+vim /usr/local/tomcat/bin/catalina.sh
+	JAVA_OPTS="$JAVA_OPTS -server -Xms1024m -Xmx2048m -XX:MaxNewSize=256m"
+
+3、部署Jenkins
+cp jenkis.war /usr/local/tomcat/webapps
+
+4、启动Tomcat
+/usr/local/tomcat/bin/startup.sh 

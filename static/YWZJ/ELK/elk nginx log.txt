@@ -1,0 +1,85 @@
+1、日志格式
+log_format elk "$http_clientip | $http_x_forwarded_for | $time_local | $request | $status | $body_bytes_sent | "
+		 "$request_body | $content_length | $http_referer | $http_user_agent | "
+		 "$http_cookie | $remote_addr | $hostname | $upstream_addr | $upstream_response_time | $request_time";
+
+2、agent.conf
+input {  
+        file {  
+                type => "elk_frontend_access"  
+                path => ["/data/logs/flight1-access_log"]  
+        }
+}  
+filter {
+	ruby {
+		init => "@kname = ['http_clientip','http_x_forwarded_for','time_local','request','status','body_bytes_sent','request_body','content_length','http_referer','http_user_agent','http_cookie','remote_addr','hostname','upstream_addr','upstream_response_time','request_time']"
+		code => "new_event = LogStash::Event.new(Hash[@kname.zip(event.get('message').split('|'))])
+				new_event.remove('@timestamp')
+				event.append(new_event)"
+	}
+	if [request] {
+		ruby {
+			init => "@kname = ['method','uri','verb']"
+			code => "new_event = LogStash::Event.new(Hash[@kname.zip(event.get('request').split(' '))])
+			new_event.remove('@timestamp')
+			event.append(new_event)
+		"
+		}
+	if [uri] {
+		ruby {
+			init => "@kname = ['url_path','url_args']"
+			code => "new_event = LogStash::Event.new(Hash[@kname.zip(event.get('uri').split('?'))])
+			new_event.remove('@timestamp')
+			event.append(new_event)
+			"
+		}
+	kv {
+		prefix => "url_"
+		source => "url_args"
+		field_split => "& "
+		remove_field => [ "url_args","uri","request" ]
+	}
+	}
+	}
+	mutate {
+	convert => ["body_bytes_sent" , "integer", "content_length", "integer", "upstream_response_time", "float","request_time", "float"]
+	}
+	date {
+		match => [ "time_local", "dd/MMM/yyyy:hh:mm:ss Z" ]
+		locale => "en"
+	}
+        grok {
+        	match => { "message" => "%{IP:clientip}" }
+  	}
+        geoip 
+	{
+        	source => "clientip"
+        }
+}
+output {
+        redis {  
+                host => "10.10.45.200"  
+                data_type => "list"  
+                key => "elk_frontend_access:redis"  
+                port=>"5379"  
+        }  
+} 
+
+3、server.conf
+input {  
+        redis {  
+                host => "10.10.45.200"  
+                data_type => "list"  
+                key => "elk_frontend_access:redis"  
+                port =>"5379"  
+        }  
+}  
+output {  
+        elasticsearch {  
+                hosts => "10.10.45.200:8200"  
+                index => "logstash-zjzc-frontend-%{+YYYY.MM.dd}"  
+        }  
+        stdout {  
+            codec => rubydebug  
+        }  
+} 

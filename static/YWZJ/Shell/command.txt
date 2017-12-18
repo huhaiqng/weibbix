@@ -1,0 +1,87 @@
+删除7天前的日志：
+find /data/mtopdata/rankbus/11978 -mtime +7 -type f -name \*.ulog | xargs rm -f
+查看目录大小：
+du -h --max-depth=1 | grep G
+获取IP
+cat hosts.txt | awk -F '[' '{print $2}' | awk -F ']' '{if(length !=0)print $1}'
+收集WAS服务器信息
+ansible was -m shell -a "ps -ef | grep [j]ava | awk '{print (\$1,\$(NF-2),\$(NF-1),\$NF)}' | sort -k 4"
+ansible命令：
+ansible TOP -m shell -a "rm -rf /data/shell/op/upload/*"
+ansible拷贝文件：
+ansible was -m copy -a 'src=/etc/hosts dest=/tmp/hosts owner=root group=root mode 644 backup=yes'
+重启服务器脚本
+/data/shell/op/was_restart
+
+glassfish启动命令：/gfv3/glassfish/bin/asadmin --port 6862  start-domain --domaindir /glassfish/
+
+查看端口号对应进程ID:
+[root@shengyi conf]# lsof -Pnl | grep 8001
+java      24102        0   47u     IPv6           16893032         0t0        TCP *:8001 (LISTEN)
+
+was重启/data/shell/op/was_restart
+
+时间同步：ntpdate time.nist.gov
+
+cat flight1-access_log | grep www.shaibaoj | awk '{print $2,$14}' | sort | uniq -c | sort -nr -k1 | head -n 20
+
+netstat -antp|grep 1521|grep EST|awk '{print $7}'|awk -F : '{print $1}'|sort |uniq -c |sort -nr |head -n 10
+netstat -antp|grep 1521|grep EST|awk '{print $5}'|awk -F : '{print $1}'|sort |uniq -c |sort -nr |head -n 10 
+
+查看installedApps目录占空间大小
+ansible was -m shell -a 'du -sh /wasprofiles/c01-`hostname`/installedApps'
+ansible was -m shell -a 'du -sh /wasprofiles/c02-`hostname`/installedApps'
+
+查看wasprofiles目录占空间大小
+ansible was -m shell -a 'du -sh /wasprofiles'
+ansible was -m shell -a 'du -sh /wasprofiles/c01-`hostname`'
+ansible was -m shell -a 'du -sh /wasprofiles/c02-`hostname`'
+
+检查core文件
+ansible was -m shell -a 'ls /wasprofiles/c02-`hostname`/core.*' | grep -v ls: | grep -v FAILED | awk '{print $1}'
+ansible was -m shell -a 'ls /wasprofiles/c01-`hostname`/core.*' | grep -v ls: | grep -v FAILED | awk '{print $1}'
+
+查看安装的包
+ansible was -m shell -a 'ls -l /wasprofiles/c01-`hostname`/installedApps/cell01'
+ansible was -m shell -a 'ls -l /wasprofiles/c02-`hostname`/installedApps/cell02'
+
+重svn上获取文件
+svn export --force --username huhaiqing --password abc123 https://10.10.228.100/svn/Mango-IT/OPS/周报/胡海青
+
+启动ttserver:10.10.4.73
+/usr/local/bin/ttserver -host 10.10.4.73 -port 11978 -thnum 8 -dmn -pid /data/mtopdata/rankbus/11978/ttserver.pid -log /data/mtopdata/rankbus/11978/ttserver.log -le -ulog /data/mtopdata/rankbus/11978 -ulim 128m -sid 11 -mhost 10.10.4.74 -mport 11978 -rts /data/mtopdata/rankbus/11978/ttserver.rts /data/mtopdata/rankbus/11978/database.tch#bnum=1000000#xmsiz=104857600#rcnum=100000
+
+启动ttserver:10.10.4.74
+/usr/local/bin/ttserver -host 10.10.4.74 -port 11978 -thnum 8 -dmn -pid /data/mtopdata/rankbus/11978/ttserver.pid -log /data/mtopdata/rankbus/11978/ttserver.log -le -ulog /data/mtopdata/rankbus/11978 -ulim 128m -sid 1 -mhost 10.10.4.73 -mport 11978 -rts /data/mtopdata/rankbus/11978/ttserver.rts /data/mtopdata/rankbus/11978/database.tch#bnum=1000000#xmsiz=104857600#rcnum=100000
+
+查看qiehuan1 apache 配置文件
+ansible qiehuan1 -m shell -a 'grep WebSpherePluginConfig /etc/httpd/conf/httpd.conf'
+ansible qiehuan1 -m shell -a 'grep .properties /etc/httpd/conf/httpd.conf'
+
+查看qiehuan2 apache 配置文件
+ansible qiehuan2 -m shell -a 'grep WebSpherePluginConfig /usr/local/apache2/conf/httpd.conf'
+ansible qiehuan2 -m shell -a 'grep .properties /usr/local/apache2/conf/httpd.conf'
+
+节点同步
+su - was1
+/wasprofiles/c01-`hostname`/bin/stopNode.sh -username yanwen.li -password YWL#15813
+/wasprofiles/c01-`hostname`/bin/syncNode.sh 10.10.4.120 8879 -username yanwen.li -password YWL#15813
+/wasprofiles/c01-`hostname`/bin/startNode.sh
+ll -rt /wasprofiles/c01-`hostname`/config/cells/cell01
+
+防火墙开通端口
+/sbin/iptables -I INPUT -p tcp --dport 10050 -j ACCEPT
+/etc/rc.d/init.d/iptables save
+service iptables restart
+
+查看登录主机IP
+awk '{print $11}' secure.4 | sort | uniq | awk -F ':' '{print $4}'
+
+zabbix agentd重启
+/usr/local/zabbix_agents/sbin/zabbix_agentd -c /usr/local/zabbix_agents/etc/zabbix_agentd.conf
+
+防火墙开通端口
+/sbin/iptables -I INPUT -p tcp --dport 10050 -j ACCEPT
+/etc/rc.d/init.d/iptables save
+service iptables restart
+

@@ -1,0 +1,45 @@
+1、安装xtrabackup
+cd /usr/local/
+tar xvf percona-xtrabackup-2.0.8-587.tar.gz
+mv percona-xtrabackup-2.0.8 xtrabackup
+vim /root/.bash_profile
+	PATH=$PATH:$HOME/bin:/usr/local/xtrabackup/bin
+source /root/.bash_profile 
+2、全量备份mysql 5.1.73数据库
+innobackupex --user=root --password=mg@Xa9382cs%acd --socket=/var/lib/mysql/mysql.sock /root
+
+3、安装 mysql 5.6.36
+yum install -y autoconf automake imake libxml2-devel expat-devel cmake gcc gcc-c++ libaio libaio-devel bzr bison libtool ncurses5-devel
+groupadd -r mysql
+useradd -r -g mysql mysql
+tar zxf mysql-5.6.26-linux-glibc2.5-x86_64.tar.gz -C /usr/local/
+cd /usr/local/
+ln -s mysql-5.6.26-linux-glibc2.5-x86_64/ mysql
+mkdir /mysqldata
+chown -R mysql.mysql /mysqldata/
+cd mysql
+chown -R root.mysql ./*
+scripts/mysql_install_db --user=mysql --datadir=/usr/local/mysql/data
+cp support-files/mysql.server /etc/init.d/mysqld
+chkconfig --add mysqld
+vim /etc/profile.d/mysql.sh
+    export PATH=$PATH:/usr/local/mysql/bin
+. /etc/profile.d/mysql.sh 
+service mysqld start
+vim my.cnf 
+    datadir = /usr/local/mysql/data
+    socket = /tmp/mysql.sock
+service mysqld start
+mysql_secure_installation
+mysql -u root -p
+
+4、使用xtrabackup还原数据库
+service mysqld start
+mv /usr/local/mysql/data/* /tmp
+innobackupex --socket=/tmp/mysql.sock --apply-log /root/2017-07-04_10-41-46
+innobackupex --socket=/tmp/mysql.sock --defaults-file=/usr/local/mysql/my.cnf --copy-back /root/2017-07-04_10-41-46
+chown -R mysql.mysql /usr/local/mysql/data
+service mysqld restart
+
+5、更新数据库
+mysql_upgrade -u root -p

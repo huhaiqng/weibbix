@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.template import loader,Context
 from django.http import HttpResponse
 from django.http import JsonResponse
-from application.models import User,Env,Tom,Config,Host,OSUser
+from application.models import User,Env,Tom,Config,Host,OSUser,TomDir
 import os
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -338,7 +338,12 @@ def save_host(request):
     fenpei=request.POST.get("fenpei")
     sta=request.POST.get("status")
     host=Host(sid=sid,ip=ip,hostname=hostname,os=os,software=software,fenpei=fenpei,sta=sta)
-    host.save()  
+    host.save()
+    if ("Tomcat" in software):
+        for d in ("tomcat_18080","tomcat_28080","tomcat_38080","tomcat_48080"):
+            dire="/usr/local"+d
+            td=TomDir(sid=sid,ip=ip,dir=dire,stat="unused")
+            td.save()
     return JsonResponse(ret)
 
 @csrf_exempt
@@ -387,7 +392,7 @@ def save_osuser(request):
     passwd=request.POST.get("passwd")
     notice=request.POST.get("notice")
     osu=OSUser(sid=sid,ip=ip,username=username,passwd=passwd,notice=notice)
-    osu.save()
+    osu.save()    
     return JsonResponse(ret)
 
 @csrf_exempt

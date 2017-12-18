@@ -1,0 +1,456 @@
+系统:CentOS 6.5
+软件:elasticsearch-5.3.2.tar.gz、logstash-5.3.2.tar.gz、kibana-5.3.2-linux-x86.tar.gz、jdk-8u131-linux-x64.tar.gz、redis-3.2.8.tar.gz
+
+1、创建账号、目录
+groupadd -g 600 elk
+useradd -g elk -u 600 elk
+mkdir /usr/local/elk
+chown -R elk.elk /usr/local/elk
+
+2、配置jdk
+su - elk
+cd /usr/local/elk
+tar xvf jdk-8u131-linux-x64.tar.gz
+mv jdk-8u131-linux-x64 jdk
+vim /root/.bash_profile 
+	JAVA_HOME=/usr/local/elk/jdk
+	CLASSPATH=$JAVA_HOME/lib/
+	PATH=$JAVA_HOME/bin:$PATH
+	export PATH JAVA_HOME CLASSPATH
+. /root/.bash_profile
+
+3、安装redis
+su - elk
+cd /usr/local/elk
+tar xvf redis-3.2.8.tar.gz
+mv redis-3.2.8 redis
+cd redis
+make
+mkdir bin
+cd src
+cp redis-cli ../bin
+cp redis-server ../bin
+cd ..
+cp redis.conf bin
+cd bin
+vim redis.conf
+	bind 10.10.45.200
+	port 5379
+	daemonize yes
+./redis-server redis.conf
+./redis-cli 
+	127.0.0.1:6379> set name tom
+	OK
+	127.0.0.1:6379> get name
+	"tom"
+	
+4、安装elasticsearch
+su - elk
+cd /usr/local/elk
+tar xvf elasticsearch-5.3.2.tar.gz
+mv elasticsearch-5.3.2 elasticsearch
+vim elasticsearch/config/elasticsearch.yml
+	network.host: 10.10.45.200
+	http.port: 8201
+	transport.host: 10.10.45.200
+	transport.tcp.port: 8301
+	bootstrap.memory_lock: false
+	bootstrap.system_call_filter: false
+	thread_pool.search.queue_size: 10000000
+elasticsearch/bin/elasticsearch -d
+
+5、安装logstash
+su - elk
+cd /usr/local/elk
+tar xvf logstash-5.3.2.tar.gz
+mv logstash-5.3.2 logstash
+vim logstash/config/logstash.yml
+	http.host: "10.10.45.200"
+	http.port: 8600-8700
+cd logstash/bin/
+vim server.conf
+	input {  
+			redis {  
+					host => "10.10.45.200"  
+					data_type => "list"  
+					key => "elk_frontend_access:redis"  
+					port =>"5379"  
+			}  
+	}  
+	output { 
+		if "_grokparsefailure" in [tags] {
+		}else{
+			if [type] == "www1_access"{
+					elasticsearch {
+					  hosts => "10.10.45.200:8201"
+					  index => "logstash-www1-frontend-%{+YYYY.MM.dd}"
+			}
+			}
+		   if [type] == "flight1_access"{
+					elasticsearch {
+					hosts => "10.10.45.200:8201"
+					index => "logstash-flight1-frontend-%{+YYYY.MM.dd}"
+			 }
+			}
+			if [type] == "www_access"{
+					elasticsearch {
+					hosts => "10.10.45.200:8201"
+					index => "logstash-www-frontend-%{+YYYY.MM.dd}"
+
+			 }
+			}
+			if [type] == "m_access"{
+					elasticsearch {
+					hosts => "10.10.45.200:8201"
+					index => "logstash-m-frontend-%{+YYYY.MM.dd}"
+
+			 }
+			}
+			if [type] == "ro_access"{
+					elasticsearch {
+					hosts => "10.10.45.200:8201"
+					index => "logstash-ro-frontend-%{+YYYY.MM.dd}"
+			 }
+			}
+		}   
+	}
+vim apache.conf
+	input {  
+			file {  
+					type => "www_access"  
+					path => ["/usr/local/elk/elklog/apachelog/log0/www.mangocity.com-access_log","/usr/local/elk/elklog/apachelog/log1/www.mangocity.com-access_log"]  
+			}
+		file {
+					type => "ro_access"
+					path => ["/usr/local/elk/elklog/apachelog/log0/ro.mangocity.com-access_log","/usr/local/elk/elklog/apachelog/log1/ro.mangocity.com-access_log"]
+			}
+	}
+
+	filter {
+	  grok {
+		match => {
+		  "message" => '%{IPORHOST:clientip} %{USER:ident} %{USER:auth} \[%{HTTPDATE:timestamp}\] "%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response:int} (?:-|%{NUMBER:bytes:int}) %{QS:referrer} %{QS:agent}'
+		}
+	  }
+
+	  date {
+		match => [ "timestamp", "dd/MMM/YYYY:HH:mm:ss Z" ]
+		locale => en
+	  }
+
+	  geoip {
+		source => "clientip"
+	  }
+
+	  useragent {
+		source => "agent"
+		target => "useragent"
+	  }
+	}
+	output {
+			redis {  
+					host => "10.10.45.200"  
+					data_type => "list"  
+					key => "elk_frontend_access:redis"  
+					port=>"5379"  
+			}  
+	}
+vim nginx.conf
+	input {  
+			file {  
+					type => "www1_access"  
+					path => ["/usr/local/elk/elklog/nginxlog/log0/www1.log","/usr/local/elk/elklog/nginxlog/log1/www1.log"]  
+			}
+			file {
+					type => "flight1_access"
+					path => ["/usr/local/elk/elklog/nginxlog/log0/flight1.log","/usr/local/elk/elklog/nginxlog/log1/flight1.log"]
+			}
+			file {
+					type => "m_access"
+					path => ["/usr/local/elk/elklog/nginxlog/log0/m.log"]
+			}
+	}  
+	filter {
+		ruby {
+			init => "@kname = ['http_clientip','http_x_forwarded_for','time_local','request','status','body_bytes_sent','request_body','content_length','http_referer','http_user_agent','http_cookie','remote_addr','hostname','upstream_addr','upstream_response_time','request_time']"
+			code => "new_event = LogStash::Event.new(Hash[@kname.zip(event.get('message').split('|'))])
+					new_event.remove('@timestamp')
+					event.append(new_event)"
+		}
+		if [request] {
+			ruby {
+				init => "@kname = ['method','uri','verb']"
+				code => "new_event = LogStash::Event.new(Hash[@kname.zip(event.get('request').split(' '))])
+				new_event.remove('@timestamp')
+				event.append(new_event)
+			"
+			}
+		if [uri] {
+			ruby {
+				init => "@kname = ['url_path','url_args']"
+				code => "new_event = LogStash::Event.new(Hash[@kname.zip(event.get('uri').split('?'))])
+				new_event.remove('@timestamp')
+				event.append(new_event)
+				"
+			}
+		kv {
+			prefix => "url_"
+			source => "url_args"
+			field_split => "& "
+			remove_field => [ "url_args","uri","request" ]
+		}
+		}
+		}
+		mutate {
+		convert => ["body_bytes_sent" , "integer", "content_length", "integer", "upstream_response_time", "float","request_time", "float"]
+		}
+			grok {
+				  match => [ 
+			"message", "%{IP:clientip} \| %{USER} \| %{HTTPDATE:timestamp}"
+		 ]
+		}
+		date {
+			match => [ "timestamp", "dd/MMM/YYYY:HH:mm:ss Z" ]
+			locale => "en"
+		}
+			geoip 
+		{
+				source => "clientip"
+			}
+		mutate {    
+					remove_field => "timestamp"      
+					remove_field => "http_clientip"      
+		} 
+	}
+	output {
+			redis {  
+					host => "10.10.45.200"  
+					data_type => "list"  
+					key => "elk_frontend_access:redis"  
+					port=>"5379"  
+			}  
+	} 
+nohup ./logstash -f server.conf >/dev/null 2>&1 &
+nohup ./logstash -f apache.conf >/dev/null 2>&1 &
+nohup ./logstash -f nginx.conf >/dev/null 2>&1 &
+
+6、安装kibana
+su - elk
+cd /usr/local/elk
+tar xvf kibana-5.3.2-linux-x86.tar.gz
+mv kibana-5.3.2-linux-x86.tar.gz kibana
+vim kibana/config/kibana.yml 
+	server.port: 4601
+	server.host: "10.10.45.200"
+	elasticsearch.url: "http://10.10.45.200:8201"
+cd kibana/bin
+nohup ./kibana >/dev/null 2>&1 &
+
+7、获取日志
+su - elk
+cd /usr/local/elk
+mkdir -pv elklog/nginxlog/log0
+mkdir -pv elklog/nginxlog/log1
+mkdir -pv elklog/apachelog/log0
+mkdir -pv elklog/apachelog/log1
+mkdir script
+#获取apache日志脚本
+vim script/get_apache_log.sh
+	#!/bin/bash
+	# delete old log
+	find /usr/local/elk/elklog/apachelog/log0 -type f -cmin +5 | xargs rm -f
+	find /usr/local/elk/elklog/apachelog/log1 -type f -cmin +5 | xargs rm -f
+
+	# get www.mangocity.com log
+	for f1 in `ssh root@10.10.130.41 find /etc/httpd/logs/ -type f -name www.mangocity.com-access_log\* -cmin -1`
+	do
+		dir1=`echo $f1 | awk -F '/' '{print $NF}'`
+		if [ -f /usr/local/elk/elklog/apachelog/log0/$dir1 ] ; then
+			n=`wc -l /usr/local/elk/elklog/apachelog/log0/$dir1.old | awk '{print $1}'`
+			rsync -auvrtzopgP --progress -e ssh root@10.10.130.41:$f1 /usr/local/elk/elklog/apachelog/log0/
+			cp /usr/local/elk/elklog/apachelog/log0/$dir1 /usr/local/elk/elklog/apachelog/log0/$dir1.old
+					m=`wc -l /usr/local/elk/elklog/apachelog/log0/$dir1 | awk '{print $1}'`
+					for ((i=$n+1;i<=$m;i++))
+			do 
+				num=$[i]p
+							cmd="sed -n $num /usr/local/elk/elklog/apachelog/log0/$dir1"
+						$cmd>>/usr/local/elk/elklog/apachelog/log0/www.mangocity.com-access_log
+					done
+		else
+				rsync -auvrtzopgP --progress -e ssh root@10.10.130.41:$f1 /usr/local/elk/elklog/apachelog/log0/
+			cp /usr/local/elk/elklog/apachelog/log0/$dir1 /usr/local/elk/elklog/apachelog/log0/$dir1.old
+			cat /usr/local/elk/elklog/apachelog/log0/$dir1 >>/usr/local/elk/elklog/apachelog/log0/www.mangocity.com-access_log
+		fi
+	done
+
+	for f2 in `ssh root@10.10.130.42 find /etc/httpd/logs/ -type f -name www.mangocity.com-access_log\* -cmin -1`
+	do
+			dir2=`echo $f2 | awk -F '/' '{print $NF}'`
+			if [ -f /usr/local/elk/elklog/apachelog/log1/$dir2 ] ; then
+					n=`wc -l /usr/local/elk/elklog/apachelog/log1/$dir2.old | awk '{print $1}'`
+					rsync -auvrtzopgP --progress -e ssh root@10.10.130.42:$f2 /usr/local/elk/elklog/apachelog/log1/
+					cp /usr/local/elk/elklog/apachelog/log1/$dir2 /usr/local/elk/elklog/apachelog/log1/$dir2.old
+					m=`wc -l /usr/local/elk/elklog/apachelog/log1/$dir2 | awk '{print $1}'`
+					echo "n:$n m:$m"
+					for ((i=$n+1;i<=$m;i++))
+					do
+							echo "n:$n m:$m i:$i"
+							num=$[i]p
+							cmd="sed -n $num /usr/local/elk/elklog/apachelog/log1/$dir2"
+							$cmd>>/usr/local/elk/elklog/apachelog/log1/www.mangocity.com-access_log
+					done
+			else
+					rsync -auvrtzopgP --progress -e ssh root@10.10.130.42:$f2 /usr/local/elk/elklog/apachelog/log1/
+					cp /usr/local/elk/elklog/apachelog/log1/$dir2 /usr/local/elk/elklog/apachelog/log1/$dir2.old
+					cat /usr/local/elk/elklog/apachelog/log1/$dir2 >>/usr/local/elk/elklog/apachelog/log1/www.mangocity.com-access_log
+			fi
+	done
+
+	# get ro.mangocity.com log
+	for f1 in `ssh root@10.10.5.155 find /etc/httpd/logs/ -type f -name ro.mangocity.com-access_log\* -cmin -1`
+	do
+			ro1=`echo $f1 | awk -F '/' '{print $NF}'`
+			if [ -f /usr/local/elk/elklog/apachelog/log0/$ro1 ] ; then
+					n=`wc -l /usr/local/elk/elklog/apachelog/log0/$ro1.old | awk '{print $1}'`
+					rsync -auvrtzopgP --progress -e ssh root@10.10.5.155:$f1 /usr/local/elk/elklog/apachelog/log0/
+					cp /usr/local/elk/elklog/apachelog/log0/$ro1 /usr/local/elk/elklog/apachelog/log0/$ro1.old
+					m=`wc -l /usr/local/elk/elklog/apachelog/log0/$ro1 | awk '{print $1}'`
+					for ((i=$n+1;i<=$m;i++))
+					do
+							num=$[i]p
+							cmd="sed -n $num /usr/local/elk/elklog/apachelog/log0/$ro1"
+							$cmd>>/usr/local/elk/elklog/apachelog/log0/ro.mangocity.com-access_log
+					done
+			else
+					rsync -auvrtzopgP --progress -e ssh root@10.10.5.155:$f1 /usr/local/elk/elklog/apachelog/log0/
+					cp /usr/local/elk/elklog/apachelog/log0/$ro1 /usr/local/elk/elklog/apachelog/log0/$ro1.old
+					cat /usr/local/elk/elklog/apachelog/log0/$ro1 >>/usr/local/elk/elklog/apachelog/log0/ro.mangocity.com-access_log
+			fi
+	done
+
+	for f2 in `ssh root@10.10.5.156 find /etc/httpd/logs/ -type f -name ro.mangocity.com-access_log\* -cmin -1`
+	do
+			ro2=`echo $f2 | awk -F '/' '{print $NF}'`
+			if [ -f /usr/local/elk/elklog/apachelog/log1/$ro2 ] ; then
+					n=`wc -l /usr/local/elk/elklog/apachelog/log1/$ro2.old | awk '{print $1}'`
+					rsync -auvrtzopgP --progress -e ssh root@10.10.5.156:$f2 /usr/local/elk/elklog/apachelog/log1/
+					cp /usr/local/elk/elklog/apachelog/log1/$ro2 /usr/local/elk/elklog/apachelog/log1/$ro2.old
+					m=`wc -l /usr/local/elk/elklog/apachelog/log1/$ro2 | awk '{print $1}'`
+					for ((i=$n+1;i<=$m;i++))
+					do
+							num=$[i]p
+							cmd="sed -n $num /usr/local/elk/elklog/apachelog/log1/$ro2"
+							$cmd>>/usr/local/elk/elklog/apachelog/log1/ro.mangocity.com-access_log
+					done
+			else
+					rsync -auvrtzopgP --progress -e ssh root@10.10.5.156:$f2 /usr/local/elk/elklog/apachelog/log1/
+					cp /usr/local/elk/elklog/apachelog/log1/$ro2 /usr/local/elk/elklog/apachelog/log1/$ro2.old
+					cat /usr/local/elk/elklog/apachelog/log1/$ro2 >>/usr/local/elk/elklog/apachelog/log1/ro.mangocity.com-access_log
+			fi
+	done
+#获取ningx日志脚本
+vim script/get_nginx_log.sh
+	#!/bin/bash
+	locdir1=/usr/local/elk/elklog/nginxlog/log0
+	locdir2=/usr/local/elk/elklog/nginxlog/log1
+
+	#get www1.mangocity.com access log
+	www1_log1=$locdir1/www1.mangocity.com-access_log
+	rsync -auvrtzopgP --progress -e ssh root@10.10.130.231:/data/logs/www1.mangocity.com-access_log $www1_log1
+	[ -f $www1_log1.old ] || touch $www1_log1.old
+	n=`wc -l $www1_log1.old | awk '{print $1}'`
+	m=`wc -l $www1_log1 | awk '{print $1}'`
+	cp $www1_log1 $www1_log1.old
+	for ((i=$n+1;i<=$m;i++))
+	do
+		num=$[i]p
+		cmd="sed -n $num $www1_log1"
+		$cmd>>$locdir1/www1.log
+	done
+
+	www1_log2=$locdir2/www1.mangocity.com-access_log
+	rsync -auvrtzopgP --progress -e ssh root@10.10.130.232:/data/logs/www1.mangocity.com-access_log $www1_log2
+	[ -f $www1_log2.old ] || touch $www1_log2.old
+	n=`wc -l $www1_log2.old | awk '{print $1}'`
+	m=`wc -l $www1_log2 | awk '{print $1}'`
+	cp $www1_log2 $www1_log2.old
+	for ((i=$n+1;i<=$m;i++))
+	do
+		num=$[i]p
+		cmd="sed -n $num $www1_log2"
+		$cmd>>$locdir2/www1.log
+	done
+
+	#get flight1.mangocity.com access log
+	flight1_log1=$locdir1/flight1-access_log
+	rsync -auvrtzopgP --progress -e ssh root@10.10.130.231:/data/logs/flight1-access_log  $flight1_log1
+	[ -f $flight1_log1.old ] || touch $flight1_log1.old
+	n=`wc -l $flight1_log1.old | awk '{print $1}'`
+	m=`wc -l $flight1_log1 | awk '{print $1}'`
+	cp $flight1_log1 $flight1_log1.old
+	for ((i=$n+1;i<=$m;i++))
+	do
+		num=$[i]p
+		cmd="sed -n $num $flight1_log1"
+		$cmd>>$locdir1/flight1.log
+	done
+
+	flight1_log2=$locdir2/flight1-access_log
+	rsync -auvrtzopgP --progress -e ssh root@10.10.130.232:/data/logs/flight1-access_log  $flight1_log2
+	[ -f $flight1_log2.old ] || touch $flight1_log2.old
+	n=`wc -l $flight1_log2.old | awk '{print $1}'`
+	m=`wc -l $flight1_log2 | awk '{print $1}'`
+	cp $flight1_log2 $flight1_log2.old
+	for ((i=$n+1;i<=$m;i++))
+	do
+		num=$[i]p
+		cmd="sed -n $num $flight1_log2"
+		$cmd>>$locdir2/flight1.log
+	done
+
+	#get m.mangocity.com access log
+	locdir1=/usr/local/elk/elklog/nginxlog/log0
+	m_log1=$locdir1/m.mangocity.com-access_log
+	rsync -auvrtzopgP --progress -e ssh root@10.10.130.58:/data/logs/uSG-website.log $m_log1
+	[ -f $m_log1.old ] || touch $m_log1.old
+	n=`wc -l $m_log1.old | awk '{print $1}'`
+	m=`wc -l $m_log1 | awk '{print $1}'`
+	cp $m_log1 $m_log1.old
+	for ((i=$n+1;i<=$m;i++))
+	do
+		num=$[i]p
+		cmd="sed -n $num $m_log1"
+		$cmd>>$locdir1/m.log
+	done
+#定期删除索引和日志脚本
+vim script/del_index.sh 
+	#!/bin/bash
+	dt=`date +"%Y.%m.%d" -d'-6 day'`
+	curl -XDELETE "http://10.10.45.200:8201/*-$dt"
+	cat /dev/null > /usr/local/elk/elklog/apachelog/log0/ro.mangocity.com-access_log
+	cat /dev/null > /usr/local/elk/elklog/apachelog/log1/ro.mangocity.com-access_log
+	cat /dev/null > /usr/local/elk/elklog/apachelog/log0/www.mangocity.com-access_log
+	cat /dev/null > /usr/local/elk/elklog/apachelog/log1/www.mangocity.com-access_log
+	cat /dev/null > /usr/local/elk/elklog/nginxlog/log0/m.log
+	cat /dev/null > /usr/local/elk/elklog/nginxlog/log1/m.log
+	cat /dev/null > /usr/local/elk/elklog/nginxlog/log0/www1.log
+	cat /dev/null > /usr/local/elk/elklog/nginxlog/log1/www1.log
+	cat /dev/null > /usr/local/elk/elklog/nginxlog/log0/flight1.log
+	cat /dev/null > /usr/local/elk/elklog/nginxlog/log1/flight1.log
+#添加定时任务，定期删除索引和日志
+crontab -e
+	01 00 * * * sh /usr/local/elk/script/del_index.sh >/dev/null 2>&1
+	* * * * * sh /usr/local/elk/script/get_apache_log.sh >/dev/null 2>&1
+	* * * * * sh /usr/local/elk/script/get_nginx_log.sh >/dev/null 2>&1
+
+8、设置elk服务器和nginx、apache服务器免密码登录
+#elk服务器
+su - elk
+ssh-keygen -t rsa
+scp ~/.ssh/id_rsa.pub root@192.168.0.10:~
+#nginx、apache服务器
+cd root
+mkdir .ssh
+chmod 700 .ssh
+cat id_rsa.pub >> .ssh/authorized_keys
+chmod 644 .ssh/authorized_keys

@@ -1,0 +1,45 @@
+server-agent模式
+yum install -y xinetd
+service xinetd start
+chkconfig xinetd on
+
+agent
+vim /etc/rsync_client.pwd
+	elk
+chmod 600 /etc/rsync_client.pwd
+/usr/bin/rsync -auvrtzopgP --progress --password-file=/etc/rsync_client.pwd /tmp/zabbix_agentd.log elk@10.10.45.200::module_elk
+
+server
+vim /etc/rsyncd.conf
+	uid=root
+	gid=root
+	use chroot=no
+	max connections=10
+	timeout=600
+	strict modes=yes
+	port=873
+	pid file=/var/run/rsyncd.pid
+	lock file=/var/run/rsyncd.lock
+	log file=/var/log/rsyncd.log
+	[module_elk]
+	path=/usr/local/elk/elklog
+	comment=rsync nginx apache logs
+	auth users=elk
+	uid=elk
+	gid=elk
+	secrets file=/etc/rsyncd.secrets
+	read only=no
+	list=no
+	hosts allow=10.10.45.0/24
+	hosts deny=0.0.0.0/32
+vim /etc/rsyncd.secrets
+	elk:elk
+chmod 600 /etc/rsyncd.secrets
+vim /etc/xinetd.d/rsync
+	disable = no
+vim /etc/xinetd.conf
+	#       log_on_success  = PID HOST DURATION EXIT
+service xinetd restart
+
+ssh模式
+rsync -vzrtopg --progress -e ssh root@10.10.45.152:/tmp/zabbix_proxy.log /usr/local/elk/elklog/

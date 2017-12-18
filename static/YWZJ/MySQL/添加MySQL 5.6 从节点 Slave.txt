@@ -1,0 +1,131 @@
+mysql版本：5.6.36
+xtraback版本：version 2.4.6
+
+1、修改主节点MySQL配置文件，并重启MySQL
+cat /usr/local/mysql/my.cnf 
+	[mysqld]
+	datadir = /var/lib/mysql
+	socket = /tmp/mysql.sock
+
+	binlog-format=ROW
+	log-slave-updates=true
+	gtid-mode=on
+	enforce-gtid-consistency=true
+	log-bin=mysql-bin
+	expire_logs_days=2
+	master-info-repository=TABLE
+	relay-log-info-repository=TABLE
+	sync-master-info=1
+	slave-parallel-workers=2
+	binlog-checksum=CRC32
+	master-verify-checksum=1
+	slave-sql-verify-checksum=1
+	binlog-rows-query-log_events=1
+	report-port=3306
+	port=3306
+	server_id = 1
+
+	sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+
+2、使用xtrabackup全备MySQL，并将备份集拷贝到从节点
+innobackupex --defaults-file=/usr/local/mysql/my.cnf --slave-info --user=root --password=mg@Xa9382cs%acd --socket=/tmp/mysql.sock /root
+
+3、修改从节点MySQL配置文件，并重启MySQL
+cat /usr/local/mysql/my.cnf 
+	[mysqld]
+	datadir = /var/lib/mysql
+	socket = /tmp/mysql.sock
+
+	relay-log = relay-log
+	relay-log-index = relay-log.index
+	binlog-format=ROW
+	log-bin=mysql-bin
+	log-slave-updates=true
+	gtid-mode=on
+	enforce-gtid-consistency=true
+	master-info-repository=TABLE
+	relay-log-info-repository=TABLE
+	sync-master-info=1
+	slave-parallel-workers=2
+	binlog-checksum=CRC32
+	master-verify-checksum=1
+	slave-sql-verify-checksum=1
+	binlog-rows-query-log_events=1
+	report-port=3306
+	port=3306
+	server_id = 10
+
+	sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+	
+4、在从节点使用xtrabackup恢复数据库(命令手动输入，不能直接复制)
+innobackupex --defautls-file=/usr/local/mysql/my.cnf --apply-log --redo-only /root/2017-07-10_16-54-29
+innobackupex --defautls-file=/usr/local/mysql/my.cnf --apply-log /root/2017-07-10_16-54-29
+innobackupex --defautls-file=/usr/local/mysql/my.cnf --socket=/tmp/mysql.sock --copy-back /root/2017-07-10_16-54-29
+
+5、在主节点创建复制专用账号
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'repluser'@'10.10.45.155' IDENTIFIED BY '123456';
+mysql> flush privileges;
+
+6、查看slave复制信息
+cat /var/lib/mysql/xtrabackup_binlog_pos_innodb 
+	mysql-bin.000003	124800463
+	
+7、将从节点添加到主节点中
+mysql> change master to master_host='10.10.45.154', master_port=3306,master_user='repluser',master_password='123456',master_log_file='mysql-bin.000003',master_log_pos=124800463;
+mysql> start slave;
+mysql> show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 10.10.45.154
+                  Master_User: repluser
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000005
+          Read_Master_Log_Pos: 1073587699
+               Relay_Log_File: relay-log.000009
+                Relay_Log_Pos: 1073587202
+        Relay_Master_Log_File: mysql-bin.000005
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 1073587032
+              Relay_Log_Space: 1073588154
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 1
+                  Master_UUID: 5a842cc5-65fb-11e7-b132-0050569b6c3a
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for the slave I/O thread to update it
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 5a842cc5-65fb-11e7-b132-0050569b6c3a:30491-1028116
+            Executed_Gtid_Set: 5a842cc5-65fb-11e7-b132-0050569b6c3a:30491-1028116
+                Auto_Position: 0

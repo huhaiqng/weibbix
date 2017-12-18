@@ -1,0 +1,14 @@
+操作系统：CentOS release 6.3 (Final)
+
+1、服务器端添加共享目录
+# 编辑exports文件
+vim /etc/exports 
+	/zabbixdb               10.10.45.0/24(rw,sync,no_root_squash)
+# 重启nfs
+service nfs restart
+
+2、客户端挂载目录
+mount -o vers=3 10.10.45.154:/zabbixdb/ /zabbixdb/
+
+注意：如果不加vers=3选项，则客户端root用户修改所属属性时报错
+chown: changing ownership of `/zabbixdb/was': Invalid argument

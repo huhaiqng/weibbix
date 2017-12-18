@@ -1,0 +1,52 @@
+1、创建用户和修改hosts文件
+groupadd -g 800 weblogic
+useradd -u 800 -g weblogic weblogic
+vim /etc/hosts
+	10.10.45.155 mysql-p01
+2、配置JDK
+tar xvf jdk-7u80-linux-x64.tar.gz -C /usr/local/
+cd /usr/local/
+mv jdk1.7.0_80/ jdk_1.7
+su - weblogic
+vim .bash_profile 
+	JAVA_HOME=/usr/local/jdk_1.7
+	PATH=$JAVA_HOME/bin:$PATH:$HOME/bin
+
+	export PATH JAVA_HOME
+. .bash_profile
+3、安装weblogic
+mkdir /usr/local/weblogic
+unzip wls1036_dev.zip -d /usr/local/weblogic/
+chown -R weblogic.weblogic /usr/local/weblogic/
+su - weblogic
+vim .bash_profile
+	JAVA_HOME=/usr/local/jdk_1.7
+	PATH=$JAVA_HOME/bin:$PATH:$HOME/bin
+	MW_HOME=/usr/local/weblogic
+
+	export PATH JAVA_HOME MW_HOME 
+. .bash_profile 
+cd /usr/local/weblogic/
+./configure.sh
+. $MW_HOME/wlserver/server/bin/setWLSEnv.sh
+#创建域
+cd /usr/local/weblogic/wlserver/common/bin/
+./config.sh
+#修改支持JDK版本
+cd /usr/local/weblogic/wlserver/common/bin/
+vim commEnv.sh 
+	SUN_ARCH_DATA_MODEL="64"
+	JAVA_USE_64BIT=true
+#修改内存
+cd /usr/local/weblogic/user_projects/domains/base_domain/bin/
+vim setDomainEnv.sh
+	WLS_MEM_ARGS_64BIT="-Xms256m -Xmx512m"
+#设置免密码启动
+cd /usr/local/weblogic/user_projects/domains/base_domain/servers/AdminServer/
+mkdir security
+vim security/boot.properties
+	username=weblogic
+	password=weblogic123
+#启动管理服务器
+cd /usr/local/weblogic/user_projects/domains/base_domain/bin/
+nohup ./startWebLogic.sh >/dev/null 2>&1 &

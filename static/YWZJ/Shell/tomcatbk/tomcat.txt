@@ -1,0 +1,22 @@
+10.10.12.162 /usr/local/tomcat7-020 /usr/local/tomcat7-021 /usr/local/tomcat7-022 /usr/local/tomcat7-023 /usr/local/tomcat7-024
+10.10.12.182 /usr/local/tomcat7-020 /usr/local/tomcat7-021 /usr/local/tomcat7-022 /usr/local/tomcat7-023 /usr/local/tomcat7-024
+10.10.12.163 /usr/local/tomcat7-025 /usr/local/tomcat7-026 /usr/local/tomcat7-027 /usr/local/tomcat7-028 /usr/local/tomcat7-029 /usr/local/tomcat7-030
+10.10.12.183 /usr/local/tomcat7-025 /usr/local/tomcat7-026 /usr/local/tomcat7-027 /usr/local/tomcat7-028 /usr/local/tomcat7-029 /usr/local/tomcat7-030
+10.10.12.164 /usr/local/tomcat7-030 /usr/local/tomcat7-031 /usr/local/tomcat7-032 /usr/local/tomcat7-033 /usr/local/tomcat7-034 /usr/local/tomcat7-001
+10.10.12.184 /usr/local/tomcat7-030 /usr/local/tomcat7-031 /usr/local/tomcat7-032 /usr/local/tomcat7-033 /usr/local/tomcat7-034
+10.10.12.165 /usr/local/tomcat7-035 /usr/local/tomcat7-036 /usr/local/tomcat7-037 /usr/local/tomcat7-038 /usr/local/tomcat7-039
+10.10.12.185 /usr/local/tomcat7-035 /usr/local/tomcat7-036 /usr/local/tomcat7-037 /usr/local/tomcat7-038 /usr/local/tomcat7-039
+10.10.12.166 /usr/local/tomcat7-040 /usr/local/tomcat7-041 /usr/local/tomcat7-042 /usr/local/tomcat7-043 /usr/local/tomcat7-044
+10.10.12.186 /usr/local/tomcat7-040 /usr/local/tomcat7-041 /usr/local/tomcat7-042 /usr/local/tomcat7-043 /usr/local/tomcat7-044
+10.10.12.167 /usr/local/tomcat7-045 /usr/local/tomcat7-046 /usr/local/tomcat7-047 /usr/local/tomcat7-048 /usr/local/tomcat7-049
+10.10.12.187 /usr/local/tomcat7-045 /usr/local/tomcat7-046 /usr/local/tomcat7-047 /usr/local/tomcat7-048 /usr/local/tomcat7-049
+10.10.12.168 /usr/local/tomcat7-047 /usr/local/tomcat7-048 /usr/local/tomcat7-050 /usr/local/tomcat7-051 /usr/local/tomcat7-052 /usr/local/tomcat7-053 /usr/local/tomcat7-054 /usr/local/tomcat7-055 /usr/local/tomcat9-050
+10.10.12.188 /usr/local/tomcat7-047 /usr/local/tomcat7-048 /usr/local/tomcat7-050 /usr/local/tomcat7-051 /usr/local/tomcat7-052 /usr/local/tomcat7-053 /usr/local/tomcat7-054 /usr/local/tomcat7-055 /usr/local/tomcat7-flights1-test
+10.10.12.206 /usr/local/tomcat7-001-80 /usr/local/tomcat7-002-8004
+10.10.12.207 /usr/local/tomcat7-001-80 /usr/local/tomcat7-002-8004
+10.10.12.12 /usr/local/tomcat-mbrapi-8080 /usr/local/tomcat7-028 /usr/local/tomcat7-030
+10.10.12.13 /usr/local/tomcat-mbrapi-8080 /usr/local/tomcat7-028 /usr/local/tomcat7-030
+10.10.12.14 /usr/local/tomcat-mbrapi-8080
+10.10.12.15 /usr/local/tomcat-mbrapi-8080
+10.10.5.80 /usr/local/tomcat7-001 /usr/local/tomcat7-002
+10.10.5.83 /usr/local/tomcat7-001

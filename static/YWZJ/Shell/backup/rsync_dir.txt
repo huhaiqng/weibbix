@@ -1,0 +1,32 @@
+# ServerIp StaticFilesDir ...
+10.10.45.82 /root/.ssh /usr/local/tomcatcluster /usr/local/nginx
+Apache1
+10.10.1.142 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config/plugsrv /var/spool/cron /root/cut-apache /root/qiehuan1143.sh
+10.10.1.144 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config/plugsrv /var/spool/cron /root/qiehuan1144.sh
+10.10.130.15 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13015.sh
+10.10.130.16 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13016.sh
+10.10.130.31 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13031.sh
+10.10.130.32 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13032.sh
+10.10.130.41 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13041.sh
+10.10.130.42 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13042.sh
+10.10.130.61 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13061.sh
+10.10.130.43 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13043.sh
+10.10.130.44 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13044.sh
+10.10.130.45 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13045.sh
+10.10.130.46 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13046.sh
+10.10.130.78 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13078.sh
+10.10.130.79 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13079.sh
+10.10.130.97 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13097.sh
+10.10.130.98 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13098.sh
+10.10.130.53 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13053.sh
+10.10.130.54 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan13054.sh
+10.10.130.102 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan130102.sh
+10.10.130.103 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan130103.sh
+10.10.5.155 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan5155.sh
+10.10.5.156 /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config /var/spool/cron /root/qiehuan5156.sh
+# Apache2
+10.10.130.118 /usr/local/apache2/conf /opt/IBM/WebSphere/Plugins/config /root/qiehuan130118.sh
+10.10.130.128 /usr/local/apache2/conf /opt/IBM/WebSphere/Plugins/config /root/qiehuan130128.sh
+10.10.130.235 /usr/local/apache2/conf /opt/IBM/WebSphere/Plugins/config /root/qiehuan130235.sh
+10.10.130.236 /usr/local/apache2/conf /opt/IBM/WebSphere/Plugins/config /root/qiehuan130236.sh
+10.10.130.237 /opt/nginx/conf /opt/nginx/ssl /opt/nginx/html /scripts/vacations

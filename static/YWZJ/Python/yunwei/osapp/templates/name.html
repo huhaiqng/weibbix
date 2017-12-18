@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Yun Wei</title>
+</head>
+<body>
+
+<form action="/your-name/" method="post">
+{% csrf_token %}
+{{ form }}
+<input type="submit" value="Submit" />
+</form>
+
+<!-- <form action="" method="post">{% csrf_token %}
+      {{ form.your_name }}
+      {{ form.your_age }}
+      <button type="submit" class="btn btn-primary">发 布</button>
+</form> -->
+
+</body>
+</html>

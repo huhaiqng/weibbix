@@ -1,0 +1,3 @@
+# ServerIp StaticFilesDir ...
+10.10.45.82 /root/.ssh /usr/local/tomcatcluster /usr/local/nginx
+10.10.1.142 /root/cut-apache /etc/httpd/conf /etc/httpd/conf.d /opt/IBM/WebSphere/Plugins/config/plugsrv /root/qiehuan1143.sh

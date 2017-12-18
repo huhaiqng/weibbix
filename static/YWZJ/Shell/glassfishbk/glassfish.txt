@@ -1,0 +1,22 @@
+10.10.12.61 /glassfish/dm02n01s01/dm02c01s01 /glassfish/dm02n01s01/dm02c02s01 /glassfish/dm02n01s01/dm02c09s01 /glassfish/dm02n01s01/dm02c11s01 /glassfish/dm02n01s01/dm02c12s01 /glassfish/dm02n01s01/dm02c13s01
+10.10.12.62 /glassfish/dm02n02s01/dm02c03s01 /glassfish/dm02n02s01/dm02c03s03 /glassfish/dm02n02s01/dm02c04s01 /glassfish/dm02n02s01/dm02c04s03 /glassfish/dm02n02s01/dm02c05s01 /glassfish/dm02n02s01/dm02c06s01 /glassfish/dm02n02s01/dm02c07s01 /glassfish/dm02n02s01/dm02c08s01
+10.10.12.63 /glassfish/dm02n03s01/dm02c02s03 /glassfish/dm02n03s01/dm02c04s05 /glassfish/dm02n03s01/dm02c04s07 /glassfish/dm02n03s01/dm02c10s01
+10.10.12.64 /glassfish/dm02n04s01/dm02c02s05 /glassfish/dm02n04s01/dm02c14s01 /glassfish/dm02n04s01/dm02c14s03
+10.10.12.65 /glassfish/dm02n05s01/dm02c15s01 /glassfish/dm02n05s01/dm02c15s03 /glassfish/dm02n05s01/dm02c15s05 /glassfish/dm02n05s01/dm02c15s07 /glassfish/dm02n05s01/dm02c16s01
+10.10.12.81 /glassfish/dm02n01s02/dm02c01s02 /glassfish/dm02n01s02/dm02c02s02 /glassfish/dm02n01s02/dm02c09s02 /glassfish/dm02n01s02/dm02c11s02 /glassfish/dm02n01s02/dm02c12s02 /glassfish/dm02n01s02/dm02c13s02
+10.10.12.82 /glassfish/dm02n02s02/dm02c03s02 /glassfish/dm02n02s02/dm02c03s04 /glassfish/dm02n02s02/dm02c04s02 /glassfish/dm02n02s02/dm02c04s04 /glassfish/dm02n02s02/dm02c05s02 /glassfish/dm02n02s02/dm02c06s02 /glassfish/dm02n02s02/dm02c07s02 /glassfish/dm02n02s02/dm02c08s02
+10.10.12.83 /glassfish/dm02n03s02/dm02c02s04 /glassfish/dm02n03s02/dm02c04s06 /glassfish/dm02n03s02/dm02c04s08 /glassfish/dm02n03s02/dm02c10s02 /glassfish/dm02n03s02/dm02c14s02
+10.10.12.84 /glassfish/dm02n04s02/dm02c02s06 /glassfish/dm02n04s02/dm02c14s02 /glassfish/dm02n04s02/dm02c14s04
+10.10.12.85 /glassfish/dm02n05s02/dm02c15s02 /glassfish/dm02n05s02/dm02c15s04 /glassfish/dm02n05s02/dm02c15s06 /glassfish/dm02n05s02/dm02c15s08 /glassfish/dm02n05s02/dm02c16s02
+10.10.22.61 /glassfish/dm02n01s01/dm02c01s01 /glassfish/dm02n01s01/dm02c02s01 /glassfish/dm02n01s01/dm02c09s01 /glassfish/dm02n01s01/dm02c11s01 /glassfish/dm02n01s01/dm02c12s01 /glassfish/dm02n01s01/dm02c13s01
+10.10.22.62 /glassfish/dm02n02s01/dm02c03s01 /glassfish/dm02n02s01/dm02c03s03 /glassfish/dm02n02s01/dm02c04s01 /glassfish/dm02n02s01/dm02c04s03 /glassfish/dm02n02s01/dm02c05s01 /glassfish/dm02n02s01/dm02c06s01 /glassfish/dm02n02s01/dm02c07s01 /glassfish/dm02n02s01/dm02c08s01 /glassfish/dm02n02s01/dm02c17s01
+10.10.22.63 /glassfish/dm02n03s01/dm02c02s03 /glassfish/dm02n03s01/dm02c04s05 /glassfish/dm02n03s01/dm02c04s07 /glassfish/dm02n03s01/dm02c10s01
+10.10.22.64 /glassfish/dm02n04s01/dm02c02s05 /glassfish/dm02n04s01/dm02c14s01 /glassfish/dm02n04s01/dm02c14s03
+10.10.22.65 /glassfish/dm02n05s01/dm02c15s01 /glassfish/dm02n05s01/dm02c15s03 /glassfish/dm02n05s01/dm02c15s05 /glassfish/dm02n05s01/dm02c15s07 /glassfish/dm02n05s01/dm02c16s01
+10.10.22.81 /glassfish/dm02n01s02/dm02c01s02 /glassfish/dm02n01s02/dm02c02s02 /glassfish/dm02n01s02/dm02c09s02 /glassfish/dm02n01s02/dm02c11s02 /glassfish/dm02n01s02/dm02c12s02 /glassfish/dm02n01s02/dm02c13s02
+10.10.22.82 /glassfish/dm02n02s02/dm02c03s02 /glassfish/dm02n02s02/dm02c03s04 /glassfish/dm02n02s02/dm02c04s02 /glassfish/dm02n02s02/dm02c04s04 /glassfish/dm02n02s02/dm02c05s02 /glassfish/dm02n02s02/dm02c06s02 /glassfish/dm02n02s02/dm02c07s02 /glassfish/dm02n02s02/dm02c08s02 /glassfish/dm02n02s02/dm02c17s02
+10.10.22.83 /glassfish/dm02n03s02/dm02c02s04 /glassfish/dm02n03s02/dm02c04s06 /glassfish/dm02n03s02/dm02c04s08 /glassfish/dm02n03s02/dm02c10s02
+10.10.22.84 /glassfish/dm02n04s02/dm02c02s06 /glassfish/dm02n04s02/dm02c14s02 /glassfish/dm02n04s02/dm02c14s04
+10.10.22.85 /glassfish/dm02n05s02/dm02c15s02 /glassfish/dm02n05s02/dm02c15s04 /glassfish/dm02n05s02/dm02c15s06 /glassfish/dm02n05s02/dm02c15s08 /glassfish/dm02n05s02/dm02c16s02
+10.10.12.60 /glassfish/dmgr
+10.10.22.60 /glassfish/dmgr

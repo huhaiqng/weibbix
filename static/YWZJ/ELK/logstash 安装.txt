@@ -1,0 +1,41 @@
+安装jdk1.8
+#解压jdk包
+cd /usr/local
+tar xvf tar xvf jdk-8u131-linux-x64.tar.gz
+mv jdk1.8.0_131/ jdk
+#配置环境变量
+vim /root/.bash_profile
+	JAVA_HOME=/usr/local/jdk
+	CLASSPATH=$JAVA_HOME/lib/
+	PATH=$PATH:$JAVA_HOME/bin
+	export PATH JAVA_HOME CLASSPATH
+source /root/.bash_profile
+
+安装logstash
+cd /usr/local
+tar xvf logstash-5.3.2.tar.gz 
+mv logstash-5.3.2/ logstash
+
+hello word测试
+cd /usr/local/logstash/bin/
+./logstash -e 'input{stdin{}}output{stdout{codec=>rubydebug}}'
+
+创建配置文件
+cd /usr/local/logstash/bin/
+vim logstash.conf
+./logstash -f logstash.conf 
+#redis配置文件内容
+[elk@rhel6 ~]$ cat /usr/local/logstash/bin/logstash.conf 
+input {
+    redis {
+        data_type => "pattern_channel"
+        key => "logstash-*"
+        host => "127.0.0.1"
+        port => 6379
+        threads => 5
+    }
+}
+#redis输入内容测试
+[elk@rhel6 redis]$ ./redis-cli 
+127.0.0.1:6379> PUBLISH logstash-demochan "hello world"
+(integer) 5

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div id="shadow" style="display:none;position: absolute;  top: 0px; bottom: 0px ;left: 0px; right: 0px; z-index: 1003;background: rgba(0,0,0,0.4); "></div>
+
+<div class="panel panel-default" id="showHosts" style=" overflow: auto;margin-right:8px;margin-left:8px">
+    <div class="input-group" style="padding:10px;">
+            <input type="text" class="form-control searchValue" placeholder="搜索任意关键字" style="width:100%;" >
+            <span class="input-group-btn" >
+                    <button class="btn btn-success">
+                            <span class="glyphicon glyphicon-search">搜索</span>
+                    </button>
+            </span>
+    </div>
+
+    <div class="panel-heading" style="z-index: 1;background: white;">
+        <button class="btn btn-success btn-xs" id="createHost" type="button">添加主机</button>
+    </div>
+
+    <table class="table table-hover table-striped  table-bordered  table-condensed  table-responsive "  >
+        <thead>
+        <tr id="hostsThead">
+            <th>IP地址</th>
+            <th>主机名</th>
+            <th>系统版本</th>
+            <th>软件部署</th>
+            <th>所属应用</th>
+            <th>申请人</th>
+            <th>是否已分配</th>
+            <th>是否使用中</th>           
+            <th style="min-width: 60px;">操作</th>
+        </tr>
+        </thead>
+        <tbody id="hostsTbody">
+        </tbody>
+
+    </table>
+</div>
+
+<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="createHostDiv">
+    <div class="modal" style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
+        <div class="modal-dialog">
+            <div class="modal-content  ">
+                <div class="modal-header" style="cursor: move;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">添加应用</h4>
+                </div>
+                <div class="modal-body" id="hostBody" >
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">IP地址</div>
+                        <input id="ip" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">主机名</div>
+                        <input id="hostName" class=" form-control"  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">系统版本</div>
+                        <input id="os" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">软件部署</div>
+                        <input id="software" class=" form-control "  style="width: 100%" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeCreateHost">取消</button>
+                    <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="saveHost">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui_1_1.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="/static/js/hosts.js"></script>
+</body>
+</html>

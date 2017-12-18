@@ -1,0 +1,43 @@
+1、安装监控插件
+wget https://www.percona.com/downloads/percona-monitoring-plugins/percona-monitoring-plugins-1.1.7/binary/redhat/6/x86_64/percona-zabbix-templates-1.1.7-2.noarch.rpm
+rpm -ivh percona-zabbix-templates-1.1.7-2.noarch.rpm 
+yum install percona-zabbix-templates php php-mysql -y
+
+2、修改zabbix agent配置文件
+cp /var/lib/zabbix/percona/templates/userparameter_percona_mysql.conf /usr/local/zabbix/etc/zabbix_agentd.conf.d/
+vim /usr/local/zabbix/etc/zabbix_agentd.conf
+	Include=/usr/local/zabbix/etc/zabbix_agentd.conf.d/
+killall -9 zabbix_agentd
+/usr/local/zabbix/sbin/zabbix_agentd
+
+3、创建mysql账号
+mysql> GRANT SELECT,PROCESS,SUPER,REPLICATION CLIENT ON *.* TO 'zabbixmoniter'@'localhost' IDENTIFIED BY "123456";
+mysql> flush privileges;
+
+4、修改插件配置文件
+vim /var/lib/zabbix/percona/scripts/ss_get_mysql_stats.php
+	$mysql_user = 'zabbixmoniter';
+	$mysql_pass = '123456';
+	$mysql_port = 3306;
+	$mysql_socket = '/tmp/mysql.sock';
+sh /var/lib/zabbix/percona/scripts/get_mysql_stats_wrapper.sh gg
+	
+5、创建zabbix用户MySQL用户账号(监控slave用)
+su - zabbix
+vim ~/.my.cnf 
+	[client]
+	user = zabbixmoniter
+	password = 123456
+	socket = /tmp/mysql.sock
+
+6、测试slave
+su - zabbix
+sh /var/lib/zabbix/percona/scripts/get_mysql_stats_wrapper.sh running-slave
+
+7、导入模板
+模板下载地址：http://jaminzhang.github.io/soft-conf/Zabbix/zbx_percona_mysql_template.xml
+
+参考博文：
+http://www.ywnds.com/?p=6199
+http://10880347.blog.51cto.com/346720/1932100
+http://jaminzhang.github.io/monitoring/Monitoring-MySQL-using-Percona-Monitoring-Plugins-in-Zabbix/

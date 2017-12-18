@@ -1,0 +1,105 @@
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html
+
+[mysqld]
+
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+
+# These are commonly set, remove the # and set as required.
+# basedir = .....
+# datadir = .....
+# port = .....
+# server_id = .....
+# socket = .....
+
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M 
+# datadir = /usr/local/mysql/data
+
+# Server
+port=3306
+socket=/tmp/mysql.sock
+basedir=/usr/local/mysql
+datadir = /var/lib/mysql
+open_files_limit=10240
+explicit_defaults_for_timestamp
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+federated
+server_id=1
+max_connections=1000
+max_connect_errors=100000
+interactive_timeout=86400
+wait_timeout=86400
+skip-name-resolve
+sync_binlog=0
+
+# Master
+log-slave-updates=true
+gtid-mode=on
+enforce-gtid-consistency=true
+master-info-repository=TABLE
+relay-log-info-repository=TABLE
+sync-master-info=1
+slave-parallel-workers=2
+binlog-checksum=CRC32
+master-verify-checksum=1
+slave-sql-verify-checksum=1
+binlog-rows-query-log_events=1
+report-port=3306
+
+# Buffer
+sort_buffer_size=4m
+read_buffer_size=4m
+read_rnd_buffer_size=4m
+join_buffer_size=4m
+net_buffer_length=16k
+max_allowed_packet=512m
+bulk_insert_buffer_size=32m
+max_heap_table_size=512m
+tmp_table_size=512m
+thread_cache_size=300
+query_cache_size=128m
+query_cache_limit=2m
+query_cache_min_res_unit=4k
+key_buffer_size=16m
+myisam_sort_buffer_size=64m
+myisam_max_sort_file_size=10g
+myisam_repair_threads=1
+
+# Log
+log-bin=mysql-bin
+binlog_cache_size=32m
+max_binlog_cache_size=64m
+binlog_stmt_cache_size=32m
+table_open_cache=2048
+binlog_format=ROW
+log_output=FILE
+slow_query_log=1
+slow_query_log_file=slow_query.log 
+general_log=0
+general_log_file=general_query.log
+expire-logs-days=2
+relay-log=relay-bin
+relay-log-index=relay-bin.index
+
+# Innodb
+innodb_data_file_path=ibdata1:2048M:autoextend
+innodb_log_file_size=128m
+innodb_log_files_in_group=3
+innodb_buffer_pool_size=6g
+innodb_buffer_pool_instances=-1
+innodb_max_dirty_pages_pct=70
+innodb_thread_concurrency=8
+innodb_flush_method=O_DIRECT
+innodb_log_buffer_size=16m
+innodb_flush_log_at_trx_commit=2

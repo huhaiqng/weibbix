@@ -24,7 +24,14 @@ class Tom(models.Model):
     tom_sid = models.CharField(max_length = 200)
     tom_name = models.CharField(max_length = 150)
     tom_ma = models.CharField(max_length = 150)
-  
+    tom_disc=models.CharField(max_length=200)
+
+class TomDir(models.Model):
+    sid=models.CharField(max_length=200)
+    ip=models.CharField(max_length=200)
+    dir=models.CharField(max_length=200)
+    stat=models.CharField(max_length=200)
+    
 class Config(models.Model):
     con_sid = models.CharField(max_length = 200)
     con_env = models.CharField(max_length = 200) 

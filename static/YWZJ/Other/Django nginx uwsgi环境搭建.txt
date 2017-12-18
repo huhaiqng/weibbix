@@ -1,0 +1,40 @@
+1、安装nginx
+2、安装uwsgi，bin文件目录为/usr/local/python27/bin/uwsgi
+pip install uwsgi
+3、创建配置文件uwsgi.ini 
+[uwsgi]
+socket = 127.0.0.1:8001
+master = true
+vhost = true
+no-site = true
+chdir = /usr/local/django/osinfo
+wsgi-file = /usr/local/django/osinfo/osinfo/wsgi.py
+workers = 2           
+reload-mercy = 10
+vacuum = true         
+max-requests = 1000   
+limit-as = 512
+buffer-size = 30000
+pidfile = /var/run/uwsgi.pid
+daemonize = /tmp/uwsgi.log
+pythonpath = /usr/local/python27/lib/python2.7/site-packages
+uid = nginx
+gid = nginx
+4、创建测试文件test.py
+def application(env, start_response):
+    start_response('200 OK', [('Content-Type','text/html')])
+    return "Hello World"
+5、启动uwsgi
+/usr/local/python27/bin/uwsgi uwsgi.ini 
+6、配置nginx
+location / {
+            root   html;
+            index  index.html index.htm;
+            include /usr/local/nginx/conf/uwsgi_params;
+            uwsgi_pass 127.0.0.1:8001;
+        }
+location /static {
+            alias /usr/local/django/osinfo/static;
+        }
+7、启动nginx测试
+

@@ -1,0 +1,13 @@
+# first: log dir
+# secound: log name
+# third: log file not less than
+# forth: delete log how many days ago 
+/glassfish/dm02n02s02/dm02c03s02/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c03s04/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c04s02/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c04s04/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c05s02/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c06s02/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c07s02/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c08s02/logs server.log_\* 20 7
+/glassfish/dm02n02s02/dm02c17s02/logs server.log_\* 20 7

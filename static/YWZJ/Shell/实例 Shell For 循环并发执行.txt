@@ -1,0 +1,17 @@
+#!/bin/bash
+d1=`date`
+for ip in `seq 1 254`
+do
+{
+    ping -c 1 10.10.7.$ip >/dev/null 2>&1
+    if [ $? -eq 0 ] ; then
+        echo "10.10.7.$ip is up"
+    else
+        echo "10.10.7.$ip is down"
+    fi
+}&
+done
+wait
+d2=`date`
+echo "$d1"
+echo "$d2"
