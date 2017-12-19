@@ -87,14 +87,16 @@ function uploadFile(){
 }
 
 function saveApp() {
-	var tom_name =$('#appname').val()
-	var tom_ma =$('#appma').val()
+	var tom_name =$('#appname').val();
+	var tom_ma =$('#appma').val();
+	var tom_desc=$("#appdesc").val();
+	var tom_cnt=$("#appcnt").val();
 	var tom_sid= Math.random().toString(36).substr(2);
-	appLine={app_name:tom_name,app_ma:tom_ma,app_sid:tom_sid}
+	appLine={app_name:tom_name,app_ma:tom_ma,app_sid:tom_sid,app_desc:tom_desc,app_cnt:tom_cnt};
     $.ajax({
         url:'/tom_add/',
         type:'POST',
-        data:{tom_name:tom_name,tom_ma:tom_ma,tom_sid:tom_sid},
+        data:{tom_name:tom_name,tom_ma:tom_ma,tom_sid:tom_sid,tom_desc:tom_desc,tom_cnt:tom_cnt},
     })
     createAppLine(appLine)
     return true
@@ -112,7 +114,9 @@ function getAppTable() {
                 app_name=tom.tom_name
             	app_ma=tom.tom_ma
             	app_sid=tom.tom_sid
-            	appLine={'app_name':app_name,'app_ma':app_ma,'app_sid':app_sid}
+            	app_desc=tom.tom_desc
+            	app_cnt=tom.tom_cnt
+            	appLine={'app_name':app_name,'app_ma':app_ma,'app_sid':app_sid,'app_desc':app_desc,'app_cnt':app_cnt}
                 createAppLine(appLine);//调用创建服务器的每一行
             }
         },
@@ -128,10 +132,20 @@ function createAppLine(appLine) {
     td.textContent = appLine.app_name;
     td.className = "app_name";
     tr.appendChild(td);
+    
+    var td = document.createElement("td");
+    td.textContent = appLine.app_cnt;
+    td.className = "app_cnt";
+    tr.appendChild(td);
 
     var td = document.createElement("td");
     td.textContent = appLine.app_ma;
     td.className = "app_ma";
+    tr.appendChild(td);
+    
+    var td=document.createElement("td");
+    td.textContent=appLine.app_desc;
+    td.className="app_desc";
     tr.appendChild(td);
 
     var td = document.createElement("td");
@@ -141,6 +155,8 @@ function createAppLine(appLine) {
     editButton.className = "btn btn-success btn-xs glyphicon glyphicon-edit";
     editButton.onclick = function () {
     	window.deploymentEditSid=this.getAttribute("sid");
+    	var tr=this.parentNode.parentNode;
+    	window.tomcnt=$(tr).find(".app_cnt")[0].textContent;
         $("#showMainContent").load("/static/html/appconfig.html");
     }
     td.appendChild(editButton);

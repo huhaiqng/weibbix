@@ -18,148 +18,170 @@
 <div id="shadow" style="display:none;position: absolute;  top: 0px; bottom: 0px ;left: 0px; right: 0px; z-index: 1003;background: rgba(0,0,0,0.4); "></div>
 
 <div id="allTask" style="margin-top:20px;" class="clearfix">
-        <div>
-			<h4 style="display: inline;"><strong>应用名称</strong>
-			<input id="appname" type="text" style="outline: none;cursor: pointer; display: inline; border: none; border-bottom: 1px solid black;margin-left: 1%;" class="stepName">
-			</h4>
-			<h4 style="display: inline; margin-left: 5%"><strong>负责人</strong>
-			<input id="appma" type="text" style="outline: none; display: inline; border: none; width: 500px; border-bottom: 1px solid black;margin-left: 1%;" class="stepName">
+	<div>
+		<h4 style="display: inline;"><strong>应用名称</strong>
+			<input id="appname" type="text" style="width:15%;text-align: center;outline: none; display: inline; border: none; border-bottom: 1px solid black;margin-left: 1%;" class="stepName">
+		</h4>
+		<h4 style="display: inline; margin-left: 5%"><strong>负责人</strong>
+			<input id="appma" type="text" style="width:15%;text-align: center;outline: none; display: inline; border: none; border-bottom: 1px solid black;margin-left: 1%;" class="stepName">
+		</h4>
+	</div>
+	<div style="margin-top: 2%;display: none;" class="everyOneServer col-md-12  clearfix  ">
+	<!--每一个服务器,复制这里开始-->
+		<div >
+		    <h4 style="display: inline"><strong>环境</strong>
+				<input id="con_env" class="con_env" style="width:6%;text-align: center;margin-left:1%;cursor: pointer;background:rgba(0, 0, 0, 0.0); border: none;border-bottom: 1px solid black;outline: none;">
 			</h4>
 		</div>
-        <div style="margin-top: 2%;display: none;" class="everyOneServer col-md-12  clearfix  ">
-            <!--每一个服务器,复制这里开始-->
-            <div >
-                <h4 style="display: inline";><strong>环境</strong></h4>
-                <input id="con_env" class="deploymentServer con_env"  style="margin-left:1%;cursor: pointer;background:rgba(0, 0, 0, 0.0); border: none;border-bottom: 1px solid black;outline: none;"    />
-            </div>
-			<div class="panel panel-default" id="showServers" style=" overflow: auto;margin-top: 10px;">
-			
-			    <div class="panel-heading" style="z-index: 1;background: white;">
-			        <button class="btn btn-success btn-xs addEnvServer" id="addEnvServer" type="button">添加服务器</button>
-			    </div>
-			    <table class="table table-hover table-striped  table-bordered  table-condensed  table-responsive "  >
-			        <thead>
-			        <tr id="serverOptions">
-			            <th >服务器</th>
-			            <th>路径</th>
-			            <th>用户名</th>
-			            <th>密码</th>
-			            <th style="width: 6%">操作</th>
-			        </tr>
-			        </thead>
-			        <tbody class="envTbody" id="envTbody">
-			        </tbody>
-			    </table>
+		<div class="panel panel-default" id="showServers" style=" overflow: auto;margin-top: 10px;">
+			<div class="panel-heading" style="z-index: 1;background: white;">
+			    <button class="btn btn-success btn-xs addEnvServer" id="addEnvServer" type="button">添加服务器</button>
 			</div>
+			<table class="table table-hover table-striped  table-bordered  table-condensed  table-responsive "  >
+			    <thead>
+			    <tr id="serverOptions">
+			        <th style="width: 16%">服务器</th>
+			        <th style="width: 20%">路径</th>
+			        <th style="width: 30%">单边访问地址</th>
+			        <th style="width: 30%">域名访问地址</th>
+			        <th style="width: 4%">操作</th>
+				</tr>
+			    </thead>
+			        <tbody class="envTbody" id="envTbody">
+			    </tbody>
+			</table>
+		</div>
+	
+		<div style="margin-top:10px">
+		        <button class="btn btn-danger btn-sm removeEnvTab glyphicon glyphicon-trash"></button>
+		</div>        
+	</div>
+</div>
 
-            <!--删除步骤-->
-            <div style="margin-top:10px">
-                <button class="btn btn-danger btn-sm removeEnvTab glyphicon glyphicon-trash"></button>
-            </div>        
+<div style="margin-top:30px;margin-bottom:50px;" class="clearfix">
+    <button class="btn btn-primary btn-sm glyphicon glyphicon-floppy-save" id="saveDeploymentTask"></button>
+    <button class=" btn btn-success btn-sm glyphicon glyphicon-plus" id="createTaskServer"></button>
+    <button class="btn btn-info btn-sm glyphicon glyphicon-arrow-left" id="closeEditDeployment" ></button>
+</div>
+    
+<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="addEnvServerDiv">
+    <div class="modal "
+         style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
+        <div class="modal-dialog">
+            <div class="modal-content  ">
+                <div class="modal-header" style="cursor: move;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">添加单边服务器</h4>
+                </div>
+
+                <div class="modal-body">                 
+                    <table style="margin-top: 5px" class="table table-bordered table-hover table-striped  table-condensed">
+                        <thead>
+                        <tr>
+                        	<th style="width:5%">
+				                <!-- <i class="glyphicon glyphicon-unchecked"></i> -->
+				            </th>
+                            <th>IP地址</th>
+                            <th>Tomcat路径</th>
+                        </tr>
+                        </thead>
+                        <tbody id="dirTB">
+						</tbody>
+                    </table>
+                </div>
+                                    
+                <div class="modal-footer">
+                    <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeAddEnvServer">取消</button>
+                    <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="addEnvServerBtn">添加</button>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+	
+<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="editEnvServerDiv">
+    <div class="modal "
+         style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
+        <div class="modal-dialog">
+            <div class="modal-content  ">
+                <div class="modal-header" style="cursor: move;">
 
-	<div style="margin-top:30px;margin-bottom:50px;" class="clearfix">
-	    <button class="btn btn-primary btn-sm glyphicon glyphicon-floppy-save" id="saveDeploymentTask"></button>
-	    <button class=" btn btn-success btn-sm glyphicon glyphicon-plus" id="createTaskServer"></button>
-	    <button class="btn btn-info btn-sm glyphicon glyphicon-arrow-left" id="closeEditDeployment" ></button>
-	</div>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+
+                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">修改单边服务器</h4>
+                </div>
+
+                <div class="modal-body" id="editBody" >
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <!--IP-->
+                        <div class="input-group-addon "  style="width: 17%">服务器</div>
+                        <input id="editfuwuqi" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <!--别名，需要检查是否重复-->
+                        <div class="input-group-addon "  style="width: 17%">路径</div>
+                        <input id="editlujing" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <!--IP-->
+                        <div class="input-group-addon "  style="width: 17%">用户名</div>
+                        <input id="edityonghuming" class=" form-control "  style="width: 100%" >
+                    </div>
+	                <div class="input-group col-md-12" style="margin-top: 10px">
+	                        <!--IP-->
+	                        <div class="input-group-addon "  style="width: 17%">密码</div>
+	                        <input id="editmima" class=" form-control "  style="width: 100%" >
+	                </div>
+                </div>
+                
+                    
+                <div class="modal-footer">
+                    <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeEditEnvServer">取消</button>
+                    <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="editEnvServerBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+	
+<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="showEnvDiv">
+    <div class="modal" style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
+        <div class="modal-dialog">
+            <div class="modal-content  ">
+                <div class="modal-header" style="cursor: move;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="glyphicon glyphicon-edit" style="color: green;">选择环境</h4>
+                </div>
+                <div class="modal-body">                 
+                    <table style="margin-top: 5px" class="table table-bordered table-hover table-striped  table-condensed">
+                        <thead>
+                        <tr>
+                        	<th style="width:5%">
+				                <!-- <i class="glyphicon glyphicon-unchecked"></i> -->
+				            </th>
+                            <th>环境名称</th>
+                            <th>域名</th>
+                        </tr>
+                        </thead>
+                        <tbody id="envTB">
+						</tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">             	                 
+                    <button type="button" style="float:left" class="btn btn-default" data-dismiss="modal" id="closeEnvDiv">取消</button>
+                    <button style="float:right" type="button" class="btn btn-success" data-dismiss="modal" id="chooseEnvBtn">确定</button>   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
-	<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="addEnvServerDiv">
-	    <div class="modal "
-	         style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
-	        <div class="modal-dialog">
-	            <div class="modal-content  ">
-	                <div class="modal-header" style="cursor: move;">
+<script type="text/javascript" src="/static/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui_1_1.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="/static/js/appconfig.js"></script>
 	
-	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-	
-	                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">添加单边服务器</h4>
-	                </div>
-	
-	                <div class="modal-body" id="editBody" >
-	                    <div class="input-group col-md-12" style="margin-top: 10px">
-	                        <!--IP-->
-	                        <div class="input-group-addon "  style="width: 17%">服务器</div>
-	                        <input id="fuwuqi" class=" form-control "  style="width: 100%" >
-	                    </div>
-	                    <div class="input-group col-md-12" style="margin-top: 10px">
-	                        <!--别名，需要检查是否重复-->
-	                        <div class="input-group-addon "  style="width: 17%">路径</div>
-	                        <input id="lujing" class=" form-control "  style="width: 100%" >
-	                    </div>
-	                    <div class="input-group col-md-12" style="margin-top: 10px">
-	                        <!--IP-->
-	                        <div class="input-group-addon "  style="width: 17%">用户名</div>
-	                        <input id="yonghuming" class=" form-control "  style="width: 100%" >
-	                    </div>
-		                <div class="input-group col-md-12" style="margin-top: 10px">
-		                        <!--IP-->
-		                        <div class="input-group-addon "  style="width: 17%">密码</div>
-		                        <input id="mima" class=" form-control "  style="width: 100%" >
-		                </div>
-	                </div>
-	                
-	                    
-	                <div class="modal-footer">
-	                    <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeAddEnvServer">取消</button>
-	                    <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="addEnvServerBtn">添加</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-	
-	<div  style="overflow: auto;z-index: 1004;width:auto;height: 100%;position: fixed;left: -100%;right: 0px;top: -120%;bottom: 0px;display:block;" id="editEnvServerDiv">
-	    <div class="modal "
-	         style="overflow:hidden;overflow-y:hidden;position:relative;left:0px;right:0px;bottom:0px;top:0px;margin:auto;display:block;">
-	        <div class="modal-dialog">
-	            <div class="modal-content  ">
-	                <div class="modal-header" style="cursor: move;">
-	
-	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-	
-	                    <h4 class=" glyphicon glyphicon-edit " style="color: green;">修改单边服务器</h4>
-	                </div>
-	
-	                <div class="modal-body" id="editBody" >
-	                    <div class="input-group col-md-12" style="margin-top: 10px">
-	                        <!--IP-->
-	                        <div class="input-group-addon "  style="width: 17%">服务器</div>
-	                        <input id="editfuwuqi" class=" form-control "  style="width: 100%" >
-	                    </div>
-	                    <div class="input-group col-md-12" style="margin-top: 10px">
-	                        <!--别名，需要检查是否重复-->
-	                        <div class="input-group-addon "  style="width: 17%">路径</div>
-	                        <input id="editlujing" class=" form-control "  style="width: 100%" >
-	                    </div>
-	                    <div class="input-group col-md-12" style="margin-top: 10px">
-	                        <!--IP-->
-	                        <div class="input-group-addon "  style="width: 17%">用户名</div>
-	                        <input id="edityonghuming" class=" form-control "  style="width: 100%" >
-	                    </div>
-		                <div class="input-group col-md-12" style="margin-top: 10px">
-		                        <!--IP-->
-		                        <div class="input-group-addon "  style="width: 17%">密码</div>
-		                        <input id="editmima" class=" form-control "  style="width: 100%" >
-		                </div>
-	                </div>
-	                
-	                    
-	                <div class="modal-footer">
-	                    <button style="float:left" type="button" class="btn btn-default" data-dismiss="modal" id="closeEditEnvServer">取消</button>
-	                    <button type="button" style="float:right" class="btn btn-success" data-dismiss="modal" id="editEnvServerBtn">保存</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-    
-    <script type="text/javascript" src="/static/js/jquery-1.8.3.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery-2.2.3.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery-ui_1_1.js"></script>
-	<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.nicescroll.min.js"></script>
-	<script type="text/javascript" src="/static/js/appconfig.js"></script>
 </body>
 </html>

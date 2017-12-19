@@ -18,13 +18,14 @@ class Env(models.Model):
     env_sid = models.CharField(max_length = 200)
     env_name = models.CharField(max_length = 150)
     env_domain = models.CharField(max_length = 150)
-    env_disc=models.CharField(max_length=200)
+    env_disc=models.CharField(max_length=200)   
      
 class Tom(models.Model):
     tom_sid = models.CharField(max_length = 200)
     tom_name = models.CharField(max_length = 150)
     tom_ma = models.CharField(max_length = 150)
     tom_disc=models.CharField(max_length=200)
+    tom_cnt=models.CharField(max_length=200)
 
 class TomDir(models.Model):
     sid=models.CharField(max_length=200)
@@ -34,12 +35,11 @@ class TomDir(models.Model):
     
 class Config(models.Model):
     con_sid = models.CharField(max_length = 200)
-    con_env = models.CharField(max_length = 200) 
+    con_env = models.CharField(max_length = 200)
+    con_ip = models.CharField(max_length = 200) 
     con_dir = models.CharField(max_length = 200)
-    con_srv = models.CharField(max_length = 200)
-    con_usr = models.CharField(max_length = 200)
-    con_pwd = models.CharField(max_length = 200)
-    srv_sid = models.CharField(max_length = 200)    
+    con_url = models.CharField(max_length = 200)
+    dom_url = models.CharField(max_length = 200)
  
 class Host(models.Model):
     sid=models.CharField(max_length=200)

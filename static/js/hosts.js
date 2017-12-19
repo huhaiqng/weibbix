@@ -256,6 +256,7 @@ function getHostsTab(){
 	                if(i>=begin-1 && i<end)//显示begin<=x<=end的记录
 	                    $(this).show();
 	            });
+	            document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";
          }
                        
 		},

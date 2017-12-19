@@ -91,14 +91,15 @@ def env_html(request):
 
 @csrf_exempt
 def tom_add(request):
-    ret={"content":"","status":False}
+    ret={"status":True}
     tom_sid=request.POST.get('tom_sid')
     tom_name=request.POST.get('tom_name')
-    tom_ma=request.POST.get('tom_ma')   
-    tom=Tom(tom_sid=tom_sid,tom_name=tom_name,tom_ma=tom_ma)
+    tom_ma=request.POST.get('tom_ma')
+    tom_desc=request.POST.get('tom_desc') 
+    tom_cnt=request.POST.get("tom_cnt")
+    tom=Tom(tom_sid=tom_sid,tom_name=tom_name,tom_ma=tom_ma,tom_disc=tom_desc,tom_cnt=tom_cnt)
     tom.save()
-    ret={'status':1001,'error':''}
-    return  HttpResponse(json.dumps(ret))
+    return  JsonResponse(ret)
 
 @csrf_exempt
 def tom_edit(request):
@@ -114,27 +115,22 @@ def con_list(request):
     sid=request.POST.get('sid')  
     envs=Config.objects.only('con_env').filter(con_sid=sid).order_by('con_env')
     con_list={"content":[],"status":True}
-    t_list={"content":[],"status":True}
     n_env=''
     l_env=''
     for e in envs:
         n_env=e.con_env
         if n_env == l_env :
             continue
-        t_env=e.con_env
-        t_data={'env':t_env}
-        t_list["content"].append(t_data)
         srv_list={"content":[],"status":True}
         con_env = e.con_env
         srvs = Config.objects.filter(Q(con_env=con_env),Q(con_sid=sid))
         for s in srvs:
-            con_sid = s.con_sid
+            con_env = s.con_env
+            con_ip = s.con_ip
             con_dir = s.con_dir
-            con_srv = s.con_srv
-            con_usr = s.con_usr
-            con_pwd = s.con_pwd
-            srv_sid = s.srv_sid
-            srv={'con_sid':con_sid,'srv_sid':srv_sid,'con_env':con_env,'con_dir':con_dir,'con_srv':con_srv,'con_usr':con_usr,'con_pwd':con_pwd}
+            con_url = s.con_url
+            dom_url = s.dom_url
+            srv={'con_env':con_env,'con_ip':con_ip,'con_dir':con_dir,'con_url':con_url,'dom_url':dom_url}
             srv_list["content"].append(srv)
         con_list["content"].append(srv_list)
         l_env=n_env
@@ -143,28 +139,18 @@ def con_list(request):
 @csrf_exempt
 def tom_save(request):
     ret={'success':True}
-    con_sid=request.POST.get('con_sid')
-    con_env=request.POST.get('con_env')
-    con_dir=request.POST.get('con_dir')
-    con_srv=request.POST.get('con_srv')
-    con_usr=request.POST.get('con_usr')
-    con_pwd=request.POST.get('con_pwd')
-    srv_sid=request.POST.get('srv_sid')
-    con=Config(con_sid=con_sid,srv_sid=srv_sid,con_env=con_env,con_dir=con_dir,con_srv=con_srv,con_usr=con_usr,con_pwd=con_pwd)
-    c=Config.objects.filter(Q(con_env=con_env),Q(con_sid=con_sid),Q(con_srv=con_srv),Q(con_dir=con_dir))
-    l=len(c)
-    if l == 1 :
-        con = Config.objects.get(Q(con_env=con_env),Q(con_sid=con_sid),Q(con_srv=con_srv),Q(con_dir=con_dir))
-        con.con_sid=request.POST.get('con_sid')
-        con.con_env=request.POST.get('con_env')
-        con.con_dir=request.POST.get('con_dir')
-        con.con_srv=request.POST.get('con_srv')
-        con.con_usr=request.POST.get('con_usr')
-        con.con_pwd=request.POST.get('con_pwd')
-        con.srv_sid=request.POST.get('srv_sid')
-        con.save()
-    else:
-        con.save()
+    con_sid=request.POST.get("sid")
+    con_env=request.POST.get("env")
+    con_ip=request.POST.get("ip")
+    con_dir=request.POST.get("dr")
+    con_url=request.POST.get("url")
+    dom_url=request.POST.get("domurl")
+    con=Config(con_sid=con_sid,con_env=con_env,con_ip=con_ip,con_dir=con_dir,con_url=con_url,dom_url=dom_url)
+    con.save()
+    
+    td=TomDir.objects.get(Q(ip=con_ip),Q(dir=con_dir))
+    td.stat="used"
+    td.save()
     return JsonResponse(ret)
 
 @csrf_exempt
@@ -193,7 +179,9 @@ def tom_list(request):
         name=t.tom_name
         ma=t.tom_ma
         sid=t.tom_sid
-        data={'tom_name':name,'tom_ma':ma,'tom_sid':sid}
+        desc=t.tom_disc
+        cnt=t.tom_cnt
+        data={'tom_name':name,'tom_ma':ma,'tom_sid':sid,'tom_desc':desc,'tom_cnt':cnt}
         tom_list["content"].append(data)
     return JsonResponse(tom_list)
 
@@ -311,6 +299,7 @@ def app_save(request):
     tom=Tom.objects.get(tom_sid=tom_sid)
     tom.tom_name=request.POST.get("tom_name")
     tom.tom_ma=request.POST.get("tom_ma")
+    tom.tom_cnt=request.POST.get("tom_cnt")
     tom.save()
     return JsonResponse(ret) 
     
@@ -370,6 +359,9 @@ def del_host(request):
     sid=request.POST.get("sid")
     host=Host.objects.get(sid=sid)
     host.delete()
+    toms=TomDir.objects.filter(sid=sid)
+    for t in toms:
+        t.delete()
     return JsonResponse(ret)
 
 @csrf_exempt
@@ -463,4 +455,15 @@ def edit_host(request):
     ehost.fenpei=request.POST.get("fenpei")
     ehost.sta=request.POST.get("status")
     ehost.save()
+    return JsonResponse(ret)
+
+@csrf_exempt
+def get_tomdir(request):
+    ret={"content":[]}
+    dirs=TomDir.objects.filter(stat="unused").order_by("dir")
+    for d in dirs:
+        ip=d.ip
+        dr=d.dir
+        td={"ip":ip,"dir":dr}
+        ret["content"].append(td)
     return JsonResponse(ret)

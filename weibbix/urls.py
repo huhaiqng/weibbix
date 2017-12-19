@@ -55,4 +55,5 @@ urlpatterns = [
     url(r'^edit_osuser/$',edit_osuser,name="edit_osuser"),
     url(r'^search_osuser/$',search_osuser,name="search_osuser"),
     url(r'^edit_host/$',edit_host,name="edit_host"),
+    url(r'^get_tomdir/$',get_tomdir,name="get_tomdir"),
 ]

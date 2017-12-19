@@ -43,8 +43,10 @@
     <table class="table table-hover table-striped  table-bordered  table-condensed  table-responsive "  >
         <thead>
         <tr id="serverOptions">
-            <th>应用名称</th>
-            <th>负责人</th>
+            <th width=15%>应用名称</th>
+            <th width=15%>上下文</th>
+            <th width=25%>负责人</th>
+            <th width=35%>描述</th>
             <th width=10%>操作</th>
         </tr>
         </thead>
@@ -70,14 +72,20 @@
 
                 <div class="modal-body" id="editBody" >
                     <div class="input-group col-md-12" style="margin-top: 10px">
-                        <!--IP-->
                         <div class="input-group-addon "  style="width: 17%">应用名称</div>
                         <input id="appname" class=" form-control "  style="width: 100%" >
                     </div>
                     <div class="input-group col-md-12" style="margin-top: 10px">
-                        <!--别名，需要检查是否重复-->
+                        <div class="input-group-addon "  style="width: 17%">上下文</div>
+                        <input id="appcnt" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
                         <div class="input-group-addon "  style="width: 17%">负责人</div>
                         <input id="appma" class=" form-control "  style="width: 100%" >
+                    </div>
+                    <div class="input-group col-md-12" style="margin-top: 10px">
+                        <div class="input-group-addon "  style="width: 17%">描述</div>
+                        <input id="appdesc" class=" form-control "  style="width: 100%" >
                     </div>
                 </div>
                 <div class="modal-footer">
