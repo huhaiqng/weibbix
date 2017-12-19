@@ -1,0 +1,19 @@
+##添加字段
+1、修改models添加字段
+tom_disc=models.CharField(max_length=200)
+2、删除应下的目录migrations
+3、查看创建表格命令manage.py sqlall core
+4、修改数据库表，添加字段
+manage.py shell
+>>>from django.db import connection
+>>>cursor=connection.cursor()
+>>>cursor.execute('ALTER TABLE application_tom ADD COLUMN tom_disc varchar(200) NOT NULL')
+
+参考博文：http://www.jianshu.com/p/90167968ee9a
+
+##删除字段
+1、在models中注释字段
+#     con_usr = models.CharField(max_length = 200)
+#     con_pwd = models.CharField(max_length = 200)
+2、修改数据库
+ALTER TABLE  application_config DROP COLUMN con_usr;
