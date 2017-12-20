@@ -197,8 +197,7 @@ function addEnvServerToTab(){
         	type:"POST",
         	dataType:"json",
         	data:dir,
-        	success:function(){
-        		
+        	success:function(){       		
         	}
         })
         createEnvServerLine(dir);
@@ -230,13 +229,6 @@ function createEnvServerLine(dirLine){
 	tr.appendChild(td);
 	
 	var td = document.createElement("td");
-//	var editButton = document.createElement("button");
-//    editButton.className = "btn btn-success btn-xs glyphicon glyphicon-edit";
-////    editButton.setAttribute("sid",sid);
-//    editButton.onclick = function () {
-//    	editEnvServer(this);
-//    }
-//    td.appendChild(editButton);
     
 	var deleteButton = document.createElement("button");
     deleteButton.style.marginLeft = "3px";
@@ -251,16 +243,11 @@ function createEnvServerLine(dirLine){
 }
 
 function delEnvServer(delEnvServerBtn){
-	var sid = window.deploymentEditSid;
 	var tr = delEnvServerBtn.parentNode.parentNode;
-	var div = delEnvServerBtn.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
-	var env = $(div).find(".con_env")[0];
-	var con_env = env.value;
-	var srv = $(tr).find(".fuwuqi")[0];
-	var con_srv = srv.textContent;
-	var dir = $(tr).find(".lujing")[0];
-	var con_dir = dir.textContent;
-	data = {con_sid:sid,con_srv:con_srv,con_dir:con_dir,con_env:con_env};
+	var url = $(tr).find(".dir_url")[0];
+	var con_url = url.textContent;
+	data = {con_url:con_url};
+	console.log(con_url);
 	$.ajax({
 		type:"POST",
 		url:"/del_con_server/",
@@ -318,13 +305,13 @@ function saveEditEnvServer(editEnvServerBtn){
 	});
 }
 
-function getEnvTab(){
-	$("#envTB").empty();
+function getEnvTab(){	
 	$.ajax({
         url: "/env_list/",
         dataType: 'json',
         data:'data',
         success: function(data){
+        	$("#envTB").empty();
         	envs=data.content
         	for (var i = 0; i < envs.length; i++) {
                 var env = envs[i];
@@ -385,14 +372,14 @@ function chooseEnvBtn(){
 	closeEnvDiv();
 }
 
-function getTomDir(){
-	$("#dirTB").empty();
+function getTomDir(){	
 	$.ajax({
 		url:"/get_tomdir/",
 		type:"POST",
 		dataType:"json",
 		data:"data",
 		success:function(data){
+			$("#dirTB").empty();
 			dirs=data.content;
 			for (var i=0;i<dirs.length;i++){
 				var d=dirs[i];

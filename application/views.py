@@ -272,12 +272,18 @@ def dep_app_to_server(request):
 @csrf_exempt 
 def del_con_server(request):
     ret={"ret":True}
-    con_sid=request.POST.get("con_sid")
-    con_srv=request.POST.get("con_srv")
-    con_dir=request.POST.get("con_dir")
-    con_env=request.POST.get("con_env")
-    srv=Config.objects.get(Q(con_sid=con_sid),Q(con_srv=con_srv),Q(con_dir=con_dir),Q(con_env=con_env))
+    con_url=request.POST.get("con_url")
+    srv=Config.objects.get(con_url=con_url)
     srv.delete()
+    
+    ip=con_url.split(":")[1].split("/")[2]
+    pt=con_url.split(":")[2].split("/")[0]
+    dr="/usr/local/tomcat_"+pt
+ #   ret={"a":ip,"b":dr}
+    td=TomDir.objects.get(Q(ip=ip),Q(dir=dr))
+    td.stat="unused"
+    td.save()
+    
     return JsonResponse(ret)
 
 @csrf_exempt
@@ -310,9 +316,9 @@ def get_dep_srv(request):
     con_env=request.POST.get("con_env")
     srv_list=Config.objects.filter(Q(con_sid=con_sid),Q(con_env=con_env))
     for s in srv_list:
-        con_srv=s.con_srv
+        con_ip=s.con_ip
         con_dir=s.con_dir
-        srv={"con_srv":con_srv,"con_dir":con_dir}
+        srv={"con_srv":con_ip,"con_dir":con_dir}
         ret["content"].append(srv)
     return JsonResponse(ret)
 
@@ -330,7 +336,7 @@ def save_host(request):
     host.save()
     if ("Tomcat" in software):
         for d in ("tomcat_18080","tomcat_28080","tomcat_38080","tomcat_48080"):
-            dire="/usr/local"+d
+            dire="/usr/local/"+d
             td=TomDir(sid=sid,ip=ip,dir=dire,stat="unused")
             td.save()
     return JsonResponse(ret)

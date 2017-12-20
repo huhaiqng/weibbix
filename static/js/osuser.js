@@ -373,20 +373,7 @@ function getOSUserTab(){
 	            direct = 0;
 	            displayPage();
             });
-            
-/*            $("#pageSizeSet").click(function setPageSize(){    // 设置每页显示多少条记录
-                pageSize = document.getElementById("pageSize").value;    //每页显示的记录条数
-                if (!/^[1-9]\d*$/.test(pageSize)) {
-                    alert("请输入正整数");
-                    return ;
-                }
-                len =$("#mytable tr").length - 1;
-                page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
-                curPage=1;        //当前页
-                direct=0;        //方向
-                firstPage();
-            });*/
- 
+             
             function displayPage(){
                 if(curPage <=1 && direct==-1){
                     direct=0;
@@ -436,8 +423,10 @@ function delOSUser(delBtn){
 		type:"POST",
 		dataType:"json",
 		data:data,
-		success:function(){
-			$(tr).remove();
+		success:function(){			
+//			$(tr).remove();
+			$("#osuserTbody").empty();
+			getOSUserTab();
 		}
 	});
 }

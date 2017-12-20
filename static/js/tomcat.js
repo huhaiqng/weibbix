@@ -59,12 +59,24 @@ function closeAddApp() {
 
 function closeUpload() {
     stopShadow();
-    $("#showMainContent").load("/static/html/tomcat.html");
+    $("#uploadApp").animate({
+        "left": "-100%",
+        "top": "-100%",
+    });
+    $("#appTbody").empty();
+    getAppTable();
+//    $("#showMainContent").load("/static/html/tomcat.html");
 }
 
 function closeDeployApp() {
+	$("#deployApp").animate({
+        "left": "-100%",
+        "top": "-100%",
+    });
     stopShadow();
-    $("#showMainContent").load("/static/html/tomcat.html");
+//    $("#showMainContent").load("/static/html/tomcat.html");
+    $("#appTbody").empty();
+    getAppTable();
 }
 
 function uploadFile(){
@@ -238,7 +250,7 @@ function showEditServerConfigTable() {
 }
 
 $(function () {	
-	getAppTable()
+	getAppTable();
 //	loadServersConfigTable()
     document.getElementById("createApp").onclick = function () {
 		document.getElementById("appname").value="";
